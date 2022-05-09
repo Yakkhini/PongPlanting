@@ -1,4 +1,4 @@
-use bevy::{prelude::*, window::PresentMode, sprite::Anchor};
+use bevy::{prelude::*, window::PresentMode, sprite::Anchor, input};
 
 #[derive(Component)]
 struct Board;
@@ -16,6 +16,7 @@ fn main() {
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
         .add_startup_system(spawn_board)
+        .add_system(board_movement)
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .run();
 }
@@ -38,5 +39,26 @@ fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
         texture: assets_server.load("sprites/Sprite-0001.png"),
         ..default()
     })
-    .insert(Board);
+    .insert(Board)
+    .insert_bundle(TransformBundle {
+        ..default()
+    });
+}
+
+fn board_movement (mut query: Query<&mut GlobalTransform, With<Board>>, keyboard_input: Res<Input<input::keyboard::KeyCode>>) {
+    
+    for mut global_transform in query.iter_mut() {
+        if keyboard_input.pressed(KeyCode::Up) | keyboard_input.pressed(KeyCode::W) {
+            global_transform.translation.y += 2.;
+        }
+        if keyboard_input.pressed(KeyCode::Down) | keyboard_input.pressed(KeyCode::S) {
+            global_transform.translation.y -= 2.;
+        }
+        if keyboard_input.pressed(KeyCode::Left) | keyboard_input.pressed(KeyCode::A) {
+            global_transform.translation.x -= 2.;
+        }
+        if keyboard_input.pressed(KeyCode::Right) | keyboard_input.pressed(KeyCode::D) {
+            global_transform.translation.x += 2.;
+        }
+    }
 }
