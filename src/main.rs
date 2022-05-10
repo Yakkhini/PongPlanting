@@ -5,7 +5,11 @@ struct Board;
 
 #[derive(Component)]
 struct Ball{
-    pub speed: Vec2,
+    speed: Vec2,
+}
+
+struct Bump{
+    acceleration: Vec2
 }
 
 fn main() {
@@ -22,8 +26,11 @@ fn main() {
         .add_startup_system(set_camera)
         .add_startup_system(spawn_board)
         .add_startup_system(spawn_ball)
+        .add_event::<Bump>()
         .add_system(board_movement)
         .add_system(ball_movement)
+        .add_system(bump)
+        .add_system(bump_check)
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .run();
 }
@@ -62,9 +69,13 @@ fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
         ..default()
     })
     .insert(Ball {
-        speed: Vec2::new(3.0, -3.0)
+        speed: Vec2::new(0.0, -3.0)
     })
     .insert_bundle(TransformBundle {
+        global: GlobalTransform {
+            translation: Vec3::new(10.0, 10.0, 0.0),
+            ..default()
+        },
         ..default()
     });
 }
@@ -91,5 +102,38 @@ fn ball_movement (mut query: Query<(&mut GlobalTransform, &Ball), With<Ball>>) {
     for (mut global_transform, ball) in query.iter_mut() {
         global_transform.translation.x += ball.speed.x;
         global_transform.translation.y += ball.speed.y;
+    }
+}
+
+fn bump(
+    mut bump_event_reader: EventReader<Bump>,
+    mut query: Query<&mut Ball>
+) {
+    for bump_event in bump_event_reader.iter() {
+        for mut ball in query.iter_mut() {
+            ball.speed.x = bump_event.acceleration.x;
+            ball.speed.y = bump_event.acceleration.y;
+        }
+    }
+}
+
+fn bump_check (
+    query_board: Query<&GlobalTransform, With<Board>>,
+    query_ball: Query<&GlobalTransform, With<Ball>>,
+    mut bump_event_writer: EventWriter<Bump>
+) {
+    for global_transform_board in query_board.iter() {
+        for global_transform_ball in query_ball.iter() {
+            if global_transform_ball.translation.x > 
+                global_transform_board.translation.x - 10.0 &&
+                global_transform_ball.translation.x < 
+                global_transform_board.translation.x + 10.0 &&
+                global_transform_ball.translation.y > global_transform_board.translation.y - 50.0 &&
+                global_transform_ball.translation.y < global_transform_board.translation.y - 40.0 {
+                bump_event_writer.send(Bump {
+                    acceleration: Vec2::new(0.0, 1.0)
+                });
+            }
+        }
     }
 }
