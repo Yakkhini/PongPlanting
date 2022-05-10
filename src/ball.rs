@@ -12,6 +12,10 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
             custom_size: Some(Vec2::new(50.0, 50.0)),
             ..default()
         },
+        transform: Transform {
+            translation: Vec3::new(0.0, 0.0, 1.0),
+            ..default()
+        },
         texture: assets_server.load("sprites/Ball-texture.png"),
         ..default()
     })

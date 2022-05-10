@@ -1,4 +1,4 @@
-use bevy::{prelude::*, input, sprite::Anchor};
+use bevy::{prelude::*, input};
 
 #[derive(Component)]
 pub struct Board;
@@ -7,7 +7,10 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite {
             custom_size: Some(Vec2::new(200.0,200.0)),
-            anchor: Anchor::TopCenter,
+            ..default()
+        },
+        transform: Transform {
+            translation: Vec3::new(0.0, -200.0, 1.0),
             ..default()
         },
         texture: assets_server.load("sprites/Sprite-0001.png"),

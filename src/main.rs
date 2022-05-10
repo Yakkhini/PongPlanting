@@ -9,10 +9,10 @@ fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
             title: "Planting Pong".to_string(),
-            width: 1090.,
+            width: 1980.,
             height: 1080.,
             present_mode: PresentMode::Mailbox,
-            resizable: true,
+            resizable: false,
             mode: WindowMode::Fullscreen,
             ..default()
         })
