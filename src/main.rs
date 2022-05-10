@@ -4,7 +4,9 @@ use bevy::{prelude::*, window::PresentMode, sprite::Anchor, input};
 struct Board;
 
 #[derive(Component)]
-struct Ball;
+struct Ball{
+    pub speed: Vec2,
+}
 
 fn main() {
     App::new()
@@ -21,6 +23,7 @@ fn main() {
         .add_startup_system(spawn_board)
         .add_startup_system(spawn_ball)
         .add_system(board_movement)
+        .add_system(ball_movement)
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .run();
 }
@@ -58,7 +61,9 @@ fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
         texture: assets_server.load("sprites/Ball-texture.png"),
         ..default()
     })
-    .insert(Ball)
+    .insert(Ball {
+        speed: Vec2::new(3.0, -3.0)
+    })
     .insert_bundle(TransformBundle {
         ..default()
     });
@@ -79,5 +84,12 @@ fn board_movement (mut query: Query<&mut GlobalTransform, With<Board>>, keyboard
         if keyboard_input.pressed(KeyCode::Right) | keyboard_input.pressed(KeyCode::D) {
             global_transform.translation.x += 2.;
         }
+    }
+}
+
+fn ball_movement (mut query: Query<(&mut GlobalTransform, &Ball), With<Ball>>) {
+    for (mut global_transform, ball) in query.iter_mut() {
+        global_transform.translation.x += ball.speed.x;
+        global_transform.translation.y += ball.speed.y;
     }
 }
