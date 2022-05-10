@@ -3,6 +3,9 @@ use bevy::{prelude::*, window::PresentMode, sprite::Anchor, input};
 #[derive(Component)]
 struct Board;
 
+#[derive(Component)]
+struct Ball;
+
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
@@ -16,6 +19,7 @@ fn main() {
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
         .add_startup_system(spawn_board)
+        .add_startup_system(spawn_ball)
         .add_system(board_movement)
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .run();
@@ -40,6 +44,21 @@ fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
         ..default()
     })
     .insert(Board)
+    .insert_bundle(TransformBundle {
+        ..default()
+    });
+}
+
+fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
+    commands.spawn_bundle(SpriteBundle {
+        sprite: Sprite {
+            custom_size: Some(Vec2::new(50.0, 50.0)),
+            ..default()
+        },
+        texture: assets_server.load("sprites/Ball-texture.png"),
+        ..default()
+    })
+    .insert(Ball)
     .insert_bundle(TransformBundle {
         ..default()
     });
