@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{ball, board};
+use crate::{ball, board, wall::BackGroundWall};
 
 
 pub struct Bump{
@@ -22,6 +22,7 @@ pub fn bump(
 pub fn bump_check (
     query_board: Query<&GlobalTransform, With<board::Board>>,
     query_ball: Query<&GlobalTransform, With<ball::Ball>>,
+    query_wall: Query<&BackGroundWall>,
     mut bump_event_writer: EventWriter<Bump>
 ) {
     for global_transform_board in query_board.iter() {
@@ -34,6 +35,18 @@ pub fn bump_check (
                 global_transform_ball.translation.y < global_transform_board.translation.y - 40.0 {
                 bump_event_writer.send(Bump {
                     acceleration: Vec2::new(0.0, 3.0)
+                });
+            }
+
+            let bgwall = query_wall.single();
+            if bgwall.exclude_check(&global_transform_ball.translation) {
+                bump_event_writer.send(Bump {
+                    acceleration: Vec2::new(0.0, -3.0)
+                });
+            }
+            if bgwall.exclude_check(&global_transform_board.translation) {
+                bump_event_writer.send(Bump {
+                    acceleration: Vec2::new(0.0, -3.0)
                 });
             }
         }

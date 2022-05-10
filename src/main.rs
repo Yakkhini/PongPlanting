@@ -3,6 +3,7 @@ use bevy::{prelude::*, window::{PresentMode, WindowMode}};
 mod board;
 mod ball;
 mod bump;
+mod wall;
 
 fn main() {
     App::new()
@@ -20,6 +21,7 @@ fn main() {
         .add_startup_system(set_camera)
         .add_startup_system(board::spawn_board)
         .add_startup_system(ball::spawn_ball)
+        .add_startup_system(wall::spawn_bgwall)
         .add_event::<bump::Bump>()
         .add_system(board::board_movement)
         .add_system(ball::ball_movement)
