@@ -13,8 +13,8 @@ pub fn bump(
 ) {
     for bump_event in bump_event_reader.iter() {
         for mut ball in query.iter_mut() {
-            ball.speed.x = bump_event.acceleration.x;
-            ball.speed.y = bump_event.acceleration.y;
+            ball.speed.x += bump_event.acceleration.x;
+            ball.speed.y += bump_event.acceleration.y;
         }
     }
 }
@@ -33,7 +33,7 @@ pub fn bump_check (
                 global_transform_ball.translation.y > global_transform_board.translation.y - 50.0 &&
                 global_transform_ball.translation.y < global_transform_board.translation.y - 40.0 {
                 bump_event_writer.send(Bump {
-                    acceleration: Vec2::new(0.0, 1.0)
+                    acceleration: Vec2::new(0.0, 3.0)
                 });
             }
         }

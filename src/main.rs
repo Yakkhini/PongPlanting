@@ -1,4 +1,4 @@
-use bevy::{prelude::*, window::PresentMode};
+use bevy::{prelude::*, window::{PresentMode, WindowMode}};
 
 mod board;
 mod ball;
@@ -7,10 +7,12 @@ mod bump;
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
-            title: "I am a window!".to_string(),
-            width: 1080.,
-            height: 720.,
-            present_mode: PresentMode::Fifo,
+            title: "Planting Pong".to_string(),
+            width: 1090.,
+            height: 1080.,
+            present_mode: PresentMode::Mailbox,
+            resizable: true,
+            mode: WindowMode::Fullscreen,
             ..default()
         })
         .add_plugins(DefaultPlugins)

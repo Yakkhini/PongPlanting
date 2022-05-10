@@ -20,16 +20,16 @@ pub fn board_movement (mut query: Query<&mut GlobalTransform, With<Board>>, keyb
     
     for mut global_transform in query.iter_mut() {
         if keyboard_input.pressed(KeyCode::Up) | keyboard_input.pressed(KeyCode::W) {
-            global_transform.translation.y += 2.;
+            global_transform.translation.y += 5.;
         }
         if keyboard_input.pressed(KeyCode::Down) | keyboard_input.pressed(KeyCode::S) {
-            global_transform.translation.y -= 2.;
+            global_transform.translation.y -= 5.;
         }
         if keyboard_input.pressed(KeyCode::Left) | keyboard_input.pressed(KeyCode::A) {
-            global_transform.translation.x -= 2.;
+            global_transform.translation.x -= 5.;
         }
         if keyboard_input.pressed(KeyCode::Right) | keyboard_input.pressed(KeyCode::D) {
-            global_transform.translation.x += 2.;
+            global_transform.translation.x += 5.;
         }
     }
 }
