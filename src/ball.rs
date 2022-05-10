@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 
+use crate::physical;
+
 
 #[derive(Component)]
-pub struct Ball{
-    pub speed: Vec2,
-}
+pub struct Ball;
 
 pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
     commands.spawn_bundle(SpriteBundle {
@@ -19,14 +19,15 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
         texture: assets_server.load("sprites/Ball-texture.png"),
         ..default()
     })
-    .insert(Ball {
-        speed: Vec2::new(0.0, -3.0)
+    .insert(Ball)
+    .insert(physical::Velocity {
+        x: 5.0,
+        y:-5.0,
+    })
+    .insert(physical::Border {
+        top_border: 0.0,
+        bottom_border: 0.0,
+        left_border: 0.0,
+        right_border: 0.0,
     });
-}
-
-pub fn ball_movement (mut query: Query<(&mut GlobalTransform, &Ball), With<Ball>>) {
-    for (mut global_transform, ball) in query.iter_mut() {
-        global_transform.translation.x += ball.speed.x;
-        global_transform.translation.y += ball.speed.y;
-    }
 }

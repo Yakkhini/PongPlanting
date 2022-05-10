@@ -1,8 +1,8 @@
 use bevy::{prelude::*, window::{PresentMode, WindowMode}};
 
+mod physical;
 mod board;
 mod ball;
-mod bump;
 mod wall;
 
 fn main() {
@@ -17,16 +17,13 @@ fn main() {
             ..default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugin(physical::PhysicalPlugin)
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
         .add_startup_system(board::spawn_board)
         .add_startup_system(ball::spawn_ball)
         .add_startup_system(wall::spawn_bgwall)
-        .add_event::<bump::Bump>()
         .add_system(board::board_movement)
-        .add_system(ball::ball_movement)
-        .add_system(bump::bump)
-        .add_system(bump::bump_check)
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .run();
 }

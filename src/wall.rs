@@ -1,27 +1,10 @@
 use bevy::prelude::*;
 
+use crate::physical;
+
 
 #[derive(Component)]
-pub struct BackGroundWall {
-    top_border: f32,
-    bottom_border: f32,
-    left_border: f32,
-    right_border: f32,
-}
-
-impl BackGroundWall  {
-    pub fn exclude_check(&self, &position: &Vec3) -> bool {
-        if position.x < self.left_border ||
-            position.x > self.right_border ||
-            position.y < self.bottom_border ||
-            position.y > self.top_border
-        {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
+pub struct BackGroundWall;
 
 pub fn spawn_bgwall(
     mut commands: Commands,
@@ -39,10 +22,11 @@ pub fn spawn_bgwall(
         texture: assets_sever.load("sprites/bg.png"),
         ..default()
     })
-    .insert(BackGroundWall {
-        top_border: 1080.0,
+    .insert(BackGroundWall)
+    .insert(physical::Border {
+        top_border: 0.0,
         bottom_border: 0.0,
         left_border: 0.0,
-        right_border: 1980.0
+        right_border: 0.0,
     });
 }

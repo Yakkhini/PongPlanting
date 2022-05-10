@@ -1,5 +1,7 @@
 use bevy::{prelude::*, input};
 
+use crate::physical;
+
 #[derive(Component)]
 pub struct Board;
 
@@ -16,7 +18,17 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
         texture: assets_server.load("sprites/Sprite-0001.png"),
         ..default()
     })
-    .insert(Board);
+    .insert(Board)
+    .insert(physical::Velocity {
+        x: 0.0,
+        y: 0.0,
+    })
+    .insert(physical::Border {
+        top_border: 0.0,
+        bottom_border: 0.0,
+        left_border: 0.0,
+        right_border: 0.0,
+    });
 }
 
 pub fn board_movement (mut query: Query<&mut GlobalTransform, With<Board>>, keyboard_input: Res<Input<input::keyboard::KeyCode>>) {
