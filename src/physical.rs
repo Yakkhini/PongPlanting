@@ -1,6 +1,6 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, sprite::collide_aabb};
 
-use crate::wall;
+use crate::{ball};
 
 #[derive(Component)]
 pub struct Velocity {
@@ -16,12 +16,32 @@ pub struct Border {
     pub right_border: f32,
 }
 
+#[derive(Component)]
+pub struct AABBCollideBox {
+    pub x_min: f32, 
+    pub x_max: f32, 
+    pub y_min: f32, 
+    pub y_max: f32,
+}
+
+impl Default for AABBCollideBox {
+    fn default() -> Self {
+        Self {
+            x_min: 0.0,
+            x_max: 0.0,
+            y_min: 0.0,
+            y_max: 0.0,
+        }
+    }
+
+}
+
 pub struct PhysicalPlugin;
 impl Plugin for PhysicalPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(movement);
-        app.add_system(collide_wall);
-        app.add_system(border_update);
+        app.add_system(ball_collide);
+        app.add_system(collide_box_update);
     }
 }
 
@@ -33,38 +53,44 @@ fn movement(mut query: Query<(&mut GlobalTransform, &Velocity)>) {
 
 }
 
-fn border_update(mut query: Query<(&mut Border, &GlobalTransform, &Sprite), Without<wall::BackGroundWall>>) {
-    for mut item in query.iter_mut() {
-        let (mut border, translation, size) = (item.0, item.1.translation, item.2.custom_size.unwrap());
-        border.top_border = translation.y + 0.5 * size.y;
-        border.bottom_border = translation.y - 0.5 * size.y;
-        border.left_border = translation.x - 0.5 * size.x;
-        border.right_border = translation.x + 0.5 * size.x;
-        item.0 = border;
-    }
-}
-
-fn collide_check(staff1: &Border, staff2: &Border) -> bool {
-    if (staff1.left_border < staff2.right_border ||
-        staff1.right_border > staff2.left_border) &&
-        (staff1.bottom_border < staff2.top_border ||
-        staff1.top_border > staff2.bottom_border) {
-            return true;
-    } else {
-        return false;
-    }
-}
-
-fn collide_wall (
-    wall: Query<&Border, With<wall::BackGroundWall>>,
-    mut board_or_ball: Query<(&mut Velocity, &mut Transform, &Border), Without<wall::BackGroundWall>>
+fn collide_box_update (
+    mut query: Query<(&mut AABBCollideBox, &GlobalTransform, &Sprite)>
 ) {
-    for mut item in board_or_ball.iter_mut() {
-        if !(collide_check(wall.single(), item.2)
-        ) {
-            item.1.translation.x -=  item.1.translation.x / (item.1.translation.x * item.1.translation.x);
-            item.0.x = -item.0.x;
-            item.0.y = -item.0.y;
+    for (mut collide_box, global_transform, sprite) in query.iter_mut() {
+        let (translation, size) = (global_transform.translation, sprite.custom_size.unwrap()); 
+        collide_box.x_min = translation.x - size.x * 0.5;
+        collide_box.x_max = translation.x + size.x * 0.5;
+        collide_box.y_min = translation.y - size.y * 0.5;
+        collide_box.y_max = translation.y + size.y * 0.5;
+    }
+}
+
+fn ball_collide(
+    mut query_ball: Query<(&AABBCollideBox, &mut GlobalTransform, &Sprite), With<ball::Ball>>,
+    query_others: Query<(&AABBCollideBox, &GlobalTransform, &Sprite), Without<ball::Ball>>
+) {
+    for (other_collide_box, other_global_transform, other_sprite) in query_others.iter() {
+        match collide_aabb::collide(
+            query_ball.single().1.translation,
+            query_ball.single().2.custom_size.unwrap(),
+            other_global_transform.translation,
+            other_sprite.custom_size.unwrap()
+        ).unwrap_or_else(|| collide_aabb::Collision::Inside) {
+            collide_aabb::Collision::Left => {
+                query_ball.single_mut().1.translation.x += other_collide_box.x_min - query_ball.single().0.x_max;
+            },
+            collide_aabb::Collision::Right => {
+                query_ball.single_mut().1.translation.x += other_collide_box.x_max - query_ball.single().0.x_min;
+            },
+            collide_aabb::Collision::Top => {
+                query_ball.single_mut().1.translation.y += other_collide_box.y_max - query_ball.single().0.y_min;
+            },
+            collide_aabb::Collision::Bottom => {
+                query_ball.single_mut().1.translation.y += other_collide_box.y_min - query_ball.single().0.y_max;
+            },
+            collide_aabb::Collision::Inside => {
+                println!("God What happend??");
+            },
         }
     }
 }

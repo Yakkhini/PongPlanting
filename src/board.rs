@@ -23,11 +23,8 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
         x: 0.0,
         y: 0.0,
     })
-    .insert(physical::Border {
-        top_border: 0.0,
-        bottom_border: 0.0,
-        left_border: 0.0,
-        right_border: 0.0,
+    .insert(physical::AABBCollideBox {
+        ..default()
     });
 }
 
