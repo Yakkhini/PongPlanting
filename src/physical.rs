@@ -56,11 +56,11 @@ fn collide_check(staff1: &Border, staff2: &Border) -> bool {
 }
 
 fn collide_wall (
-    wall: Query<(&Velocity, &Border), With<wall::BackGroundWall>>,
+    wall: Query<&Border, With<wall::BackGroundWall>>,
     mut board_or_ball: Query<(&mut Velocity, &mut Transform, &Border), Without<wall::BackGroundWall>>
 ) {
     for mut item in board_or_ball.iter_mut() {
-        if !(collide_check(wall.single().1, item.2)
+        if !(collide_check(wall.single(), item.2)
         ) {
             item.1.translation.x -=  item.1.translation.x / (item.1.translation.x * item.1.translation.x);
             item.0.x = -item.0.x;
