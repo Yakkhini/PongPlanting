@@ -11,6 +11,8 @@ fn main() {
             title: "Planting Pong".to_string(),
             width: 1980.,
             height: 1080.,
+            position: Some(Vec2::new(0.0, 0.0)),
+            scale_factor_override: Some(1.0),
             present_mode: PresentMode::Mailbox,
             resizable: false,
             mode: WindowMode::Fullscreen,
