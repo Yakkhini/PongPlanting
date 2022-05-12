@@ -24,6 +24,8 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
         y: 0.0,
     })
     .insert(physical::AABBCollideBox {
+        height: 70.0,
+        width: 160.0,
         ..default()
     });
 }

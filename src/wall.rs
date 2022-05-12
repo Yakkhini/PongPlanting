@@ -34,13 +34,7 @@ pub fn spawn_bgwall(
         //texture: assets_sever.load("sprites/bg.png"),
         ..default()
     })
-    .insert(BackGroundWall)
-    .insert(physical::Border {
-        top_border: 990.0,
-        bottom_border: -990.0,
-        left_border: 540.0,
-        right_border: -540.0,
-    });
+    .insert(BackGroundWall);
 
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite { 
@@ -55,13 +49,9 @@ pub fn spawn_bgwall(
         ..default()
     })
     .insert(TopWall)
-    .insert(physical::Border {
-        top_border: 550.0,
-        bottom_border: 540.0,
-        left_border: -990.0,
-        right_border: 990.0,
-    })
     .insert(physical::AABBCollideBox {
+        height: 10.0,
+        width: 1980.0,
         ..default()
     });
 
@@ -78,13 +68,9 @@ pub fn spawn_bgwall(
         ..default()
     })
     .insert(BottomWall)
-    .insert(physical::Border {
-        top_border: -540.0,
-        bottom_border: -550.0,
-        left_border: -990.0,
-        right_border: 990.0,
-    })
     .insert(physical::AABBCollideBox {
+        height: 10.0,
+        width: 1980.0,
         ..default()
     });
 
@@ -101,13 +87,9 @@ pub fn spawn_bgwall(
         ..default()
     })
     .insert(LeftWall)
-    .insert(physical::Border {
-        top_border: 540.0,
-        bottom_border: -540.0,
-        left_border: -1000.0,
-        right_border: -990.0,
-    })
     .insert(physical::AABBCollideBox {
+        height: 1080.0,
+        width: 10.0,
         ..default()
     });
 
@@ -124,13 +106,9 @@ pub fn spawn_bgwall(
         ..default()
     })
     .insert(RightWall)
-    .insert(physical::Border {
-        top_border: 540.0,
-        bottom_border: -540.0,
-        left_border: 990.0,
-        right_border: 1000.0,
-    })
     .insert(physical::AABBCollideBox {
+        height: 1080.0,
+        width: 10.0,
         ..default()
     });
 }

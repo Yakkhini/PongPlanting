@@ -8,20 +8,14 @@ pub struct Velocity {
     pub y: f32,
 }
 
-#[derive(Component)]
-pub struct Border {
-    pub top_border: f32,
-    pub bottom_border: f32,
-    pub left_border: f32,
-    pub right_border: f32,
-}
-
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct AABBCollideBox {
     pub x_min: f32, 
     pub x_max: f32, 
     pub y_min: f32, 
     pub y_max: f32,
+    pub height: f32,
+    pub width: f32,
 }
 
 impl Default for AABBCollideBox {
@@ -31,6 +25,8 @@ impl Default for AABBCollideBox {
             x_max: 0.0,
             y_min: 0.0,
             y_max: 0.0,
+            height: 0.0,
+            width: 0.0,
         }
     }
 
@@ -54,27 +50,30 @@ fn movement(mut query: Query<(&mut GlobalTransform, &Velocity)>) {
 }
 
 fn collide_box_update (
-    mut query: Query<(&mut AABBCollideBox, &GlobalTransform, &Sprite)>
+    mut query_box: Query<(&mut AABBCollideBox, &GlobalTransform)>
 ) {
-    for (mut collide_box, global_transform, sprite) in query.iter_mut() {
-        let (translation, size) = (global_transform.translation, sprite.custom_size.unwrap()); 
-        collide_box.x_min = translation.x - size.x * 0.5;
-        collide_box.x_max = translation.x + size.x * 0.5;
-        collide_box.y_min = translation.y - size.y * 0.5;
-        collide_box.y_max = translation.y + size.y * 0.5;
+    for (mut collide_box,
+        global_transform) in query_box.iter_mut() {
+        let (translation, height, width) = (global_transform.translation, collide_box.height, collide_box.width); 
+        collide_box.x_min = translation.x - width * 0.5;
+        collide_box.x_max = translation.x + width * 0.5;
+        collide_box.y_min = translation.y - height * 0.5;
+        collide_box.y_max = translation.y + height * 0.5;
+        println!("{:?}, {:?}", collide_box, translation);
+        
     }
 }
 
 fn ball_collide(
-    mut query_ball: Query<(&AABBCollideBox, &mut GlobalTransform, &Sprite), With<ball::Ball>>,
-    query_others: Query<(&AABBCollideBox, &GlobalTransform, &Sprite), Without<ball::Ball>>
+    mut query_ball: Query<(&AABBCollideBox, &mut GlobalTransform), With<ball::Ball>>,
+    query_others: Query<(&AABBCollideBox, &GlobalTransform), Without<ball::Ball>>
 ) {
-    for (other_collide_box, other_global_transform, other_sprite) in query_others.iter() {
+    for (other_collide_box, other_global_transform) in query_others.iter() {
         match collide_aabb::collide(
             query_ball.single().1.translation,
-            query_ball.single().2.custom_size.unwrap(),
+            Vec2::new(query_ball.single().0.width, query_ball.single().0.height),
             other_global_transform.translation,
-            other_sprite.custom_size.unwrap()
+            Vec2::new(other_collide_box.width, other_collide_box.height)
         ).unwrap_or_else(|| collide_aabb::Collision::Inside) {
             collide_aabb::Collision::Left => {
                 query_ball.single_mut().1.translation.x += other_collide_box.x_min - query_ball.single().0.x_max;
@@ -89,7 +88,7 @@ fn ball_collide(
                 query_ball.single_mut().1.translation.y += other_collide_box.y_min - query_ball.single().0.y_max;
             },
             collide_aabb::Collision::Inside => {
-                println!("God What happend??");
+                
             },
         }
     }

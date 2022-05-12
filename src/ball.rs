@@ -13,7 +13,7 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(0.0, 0.0, 2.0),
+            translation: Vec3::new(0.0, 0.0, 1.0),
             ..default()
         },
         texture: assets_server.load("sprites/Ball-texture.png"),
@@ -21,16 +21,12 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
     })
     .insert(Ball)
     .insert(physical::Velocity {
-        x: 1.0,
-        y: -1.0,
-    })
-    .insert(physical::Border {
-        top_border: 0.0,
-        bottom_border: 0.0,
-        left_border: 0.0,
-        right_border: 0.0,
+        x: 0.0,
+        y: 0.0,
     })
     .insert(physical::AABBCollideBox {
+        height: 30.0,
+        width:30.0,
         ..default()
     });
 }
