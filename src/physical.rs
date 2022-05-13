@@ -1,8 +1,8 @@
 use bevy::{prelude::*, sprite::collide_aabb};
 
-use crate::board;
+use crate::{board, ball};
 
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct Velocity {
     pub x: f32,
     pub y: f32,
@@ -52,6 +52,8 @@ impl Plugin for PhysicalPlugin {
         app.add_system(collision_event_handler);
         app.add_system(collide_box_update);
         app.add_system(friction);
+        app.add_system(board_collision);
+        app.add_system(ball_collision.before(collision_event_handler));
     }
 }
 
@@ -96,25 +98,37 @@ fn collide_check(&subject: &(&AABBCollideBox, GlobalTransform, Entity),
                 match check_result {
                     collide_aabb::Collision::Left => {
                         if subject.0.platform == false {
-                            result.x += 0.5 * (object.0.x_min - subject.0.x_max);
+                            match object.0.platform {
+                                true => {result.x += 1.0 * (object.0.x_min - subject.0.x_max);},
+                                false => {result.x += 0.5 * (object.0.x_min - subject.0.x_max);},
+                            }
                             axis = "x".to_string();
                         }
                     },
                     collide_aabb::Collision::Right => {
                         if subject.0.platform == false {
-                            result.x += 0.5 * (object.0.x_max - subject.0.x_min);
+                            match object.0.platform {
+                                true => {result.x += 1.0 * (object.0.x_max - subject.0.x_min);},
+                                false => {result.x += 0.5 * (object.0.x_max - subject.0.x_min);},
+                            }
                             axis = "x".to_string();
                         }
                     },
                     collide_aabb::Collision::Top => {
                         if subject.0.platform == false {
-                            result.y += 0.5 * (object.0.y_max - subject.0.y_min);
+                            match object.0.platform {
+                                true => {result.y += 1.0 * (object.0.y_max - subject.0.y_min);},
+                                false => {result.y += 0.5 * (object.0.y_max - subject.0.y_min);},
+                            }
                             axis = "y".to_string();
                         }
                     },
                     collide_aabb::Collision::Bottom => {
                         if subject.0.platform == false {
-                            result.y += 0.5 * (object.0.y_min - subject.0.y_max);
+                            match object.0.platform {
+                                true => {result.y += 1.0 * (object.0.y_min - subject.0.y_max);},
+                                false => {result.y += 0.5 * (object.0.y_min - subject.0.y_max);},
+                            }
                             axis = "y".to_string();
                         }
                     },
@@ -159,26 +173,16 @@ fn collide_event_writer(
     }
 }
 
-fn collision_event_handler (mut query: Query<(Entity, &mut Transform, &mut Velocity)>,
+fn collision_event_handler (mut query: Query<(Entity, &mut GlobalTransform)>,
     mut event_handler: EventReader<CollisionEvent>
 ) {
-    for cillision_event in event_handler.iter() {
-        println!("{:?}, {:?}", cillision_event.subject, cillision_event.object);
+    for collision_event in event_handler.iter() {
+        //println!("{:?}, {:?}", collision_event.subject, collision_event.object);
         for mut staff in query.iter_mut() {
-            if staff.0 == cillision_event.subject {
-                if cillision_event.subject_axis == "x".to_string() {
-                    staff.2.x = 0.0;
-                } else if cillision_event.subject_axis == "y".to_string() {
-                    staff.2.y = 0.0;
-                }
-                staff.1.translation = cillision_event.subject_transform.translation;
-            } else if staff.0 == cillision_event.object {
-                if cillision_event.object_axis == "x".to_string() {
-                    staff.2.x = 0.0;
-                } else if cillision_event.object_axis == "y".to_string() {
-                    staff.2.y = 0.0;
-                }
-                staff.1.translation = cillision_event.object_transform.translation;
+            if staff.0 == collision_event.subject {
+                staff.1.translation = collision_event.subject_transform.translation;
+            } else if staff.0 == collision_event.object {
+                staff.1.translation = collision_event.object_transform.translation;
             }
 
         }
@@ -195,4 +199,58 @@ fn friction (mut query: Query<&mut Velocity, With<board::Board>>) {
     if velocity.y * velocity.y < 0.05 {
         velocity.y = 0.0;
     } 
+}
+
+fn board_collision(
+    mut query: Query<(Entity, &mut Velocity), With<board::Board>>,
+    mut collision_event_reader: EventReader<CollisionEvent>
+) {
+    for collision_event in collision_event_reader.iter() {
+        for mut staff in query.iter_mut() {
+            if staff.0 == collision_event.subject {
+                if collision_event.subject_axis == "x".to_string() {
+                    staff.1.x = 0.0;
+                } else if collision_event.subject_axis == "y".to_string() {
+                    staff.1.y = 0.0;
+                }
+            } else if staff.0 == collision_event.object {
+                if collision_event.object_axis == "x".to_string() {
+                    staff.1.x = 0.0;
+                } else if collision_event.object_axis == "y".to_string() {
+                    staff.1.y = 0.0;
+                }
+            }
+
+        }
+    }
+}
+
+fn ball_collision(
+    mut query: Query<(&mut Velocity, &GlobalTransform, Entity), With<ball::Ball>>,
+    mut collision_event_reader: EventReader<CollisionEvent>
+) {
+    for collision_event in collision_event_reader.iter() {
+        let mut staff = query.single_mut();
+        if staff.2 == collision_event.subject {
+            let mut direction = (collision_event.subject_transform.translation - staff.1.translation).truncate();
+            direction -= Vec2::new(staff.0.x, staff.0.y);
+            let k1 = direction.x / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            let k2 = direction.y / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            if collision_event.subject_axis == "x".to_string() {
+                (staff.0.x, staff.0.y) = (k1 * 5.0, - k2 * 5.0);
+            } else if collision_event.subject_axis == "y".to_string() {
+                (staff.0.x, staff.0.y) = (- k1 * 5.0, k2 * 5.0);
+            }
+        } else if staff.2 == collision_event.object {
+            let mut direction = (collision_event.object_transform.translation - staff.1.translation).truncate();
+            direction -= Vec2::new(staff.0.x, staff.0.y);
+            let k1 = direction.x / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            let k2 = direction.y / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            if collision_event.object_axis == "x".to_string() {
+                (staff.0.x, staff.0.y) = (k1 * 5.0, - k2 * 5.0);
+            } else if collision_event.object_axis == "y".to_string() {
+                (staff.0.x, staff.0.y) = (- k1 * 5.0, k2 * 5.0);
+            }
+        }
+    }
 }

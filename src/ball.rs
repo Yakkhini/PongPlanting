@@ -21,8 +21,8 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
     })
     .insert(Ball)
     .insert(physical::Velocity {
-        x: 0.0,
-        y: 0.0,
+        x: 5.0,
+        y: -5.0,
     })
     .insert(physical::AABBCollideBox {
         height: 30.0,
