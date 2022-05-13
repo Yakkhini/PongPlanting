@@ -37,6 +37,8 @@ struct CollisionEvent {
     object: Entity,
     subject_transform: GlobalTransform,
     object_transform: GlobalTransform,
+    subject_axis: String,
+    object_axis: String,
 }
 
 pub struct PhysicalPlugin;
@@ -75,8 +77,9 @@ fn collide_box_update (
 
 fn collide_check(&subject: &(&AABBCollideBox, GlobalTransform, Entity),
     &object: &(&AABBCollideBox, GlobalTransform, Entity)) -> 
-    Vec3 {
+    (Vec3, String) {
         let mut result = subject.1.translation.clone();
+        let mut axis = String::new();
         let check_result = collide_aabb::collide(
             subject.1.translation,
             Vec2::new(subject.0.width, subject.0.height),
@@ -90,22 +93,26 @@ fn collide_check(&subject: &(&AABBCollideBox, GlobalTransform, Entity),
                 match check_result {
                     collide_aabb::Collision::Left => {
                         if subject.0.platform == false {
-                            result.x += object.0.x_min - subject.0.x_max;
+                            result.x += 0.5 * (object.0.x_min - subject.0.x_max);
+                            axis = "x".to_string();
                         }
                     },
                     collide_aabb::Collision::Right => {
                         if subject.0.platform == false {
-                            result.x += object.0.x_max - subject.0.x_min;
+                            result.x += 0.5 * (object.0.x_max - subject.0.x_min);
+                            axis = "x".to_string();
                         }
                     },
                     collide_aabb::Collision::Top => {
                         if subject.0.platform == false {
-                            result.y += object.0.y_max - subject.0.y_min;
+                            result.y += 0.5 * (object.0.y_max - subject.0.y_min);
+                            axis = "y".to_string();
                         }
                     },
                     collide_aabb::Collision::Bottom => {
                         if subject.0.platform == false {
-                            result.y += object.0.y_min - subject.0.y_max;
+                            result.y += 0.5 * (object.0.y_min - subject.0.y_max);
+                            axis = "y".to_string();
                         }
                     },
                     collide_aabb::Collision::Inside => {
@@ -116,7 +123,7 @@ fn collide_check(&subject: &(&AABBCollideBox, GlobalTransform, Entity),
             None => {},
         }
 
-        return result;
+        return (result, axis);
 }
 
 fn collide_event_writer(
@@ -128,8 +135,11 @@ fn collide_event_writer(
     (staff2_box, staff2_position, staff2)]) = combinations.fetch_next() {
         let mut subject = (staff1_box, staff1_position.clone(), staff1);
         let mut object = (staff2_box, staff2_position.clone(), staff2);
-        subject.1.translation = collide_check(&subject, &object).clone();
-        object.1.translation = collide_check(&object, &subject).clone();
+        let (subject_position, subject_axis) = collide_check(&subject, &object);
+        let (objrct_position, object_axis) = collide_check(&object, &subject);
+
+        subject.1.translation = subject_position;
+        object.1.translation = objrct_position;
         
         if subject.1.translation != staff1_position.translation ||
         object.1.translation != staff2_position.translation {
@@ -138,21 +148,33 @@ fn collide_event_writer(
                 object: object.2,
                 subject_transform: subject.1.clone(),
                 object_transform: object.1.clone(),
+                subject_axis,
+                object_axis,
             })
         }
         
     }
 }
 
-fn collision_event_handler (mut query: Query<(Entity, &mut Transform)>,
+fn collision_event_handler (mut query: Query<(Entity, &mut Transform, &mut Velocity)>,
     mut event_handler: EventReader<CollisionEvent>
 ) {
     for cillision_event in event_handler.iter() {
         println!("{:?}, {:?}", cillision_event.subject, cillision_event.object);
         for mut staff in query.iter_mut() {
             if staff.0 == cillision_event.subject {
+                if cillision_event.subject_axis == "x".to_string() {
+                    staff.2.x = 0.0;
+                } else if cillision_event.subject_axis == "y".to_string() {
+                    staff.2.y = 0.0;
+                }
                 staff.1.translation = cillision_event.subject_transform.translation;
             } else if staff.0 == cillision_event.object {
+                if cillision_event.object_axis == "x".to_string() {
+                    staff.2.x = 0.0;
+                } else if cillision_event.object_axis == "y".to_string() {
+                    staff.2.y = 0.0;
+                }
                 staff.1.translation = cillision_event.object_transform.translation;
             }
 

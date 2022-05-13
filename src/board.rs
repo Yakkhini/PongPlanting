@@ -31,20 +31,20 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
     });
 }
 
-pub fn board_movement (mut query: Query<&mut GlobalTransform, With<Board>>, keyboard_input: Res<Input<input::keyboard::KeyCode>>) {
+pub fn board_movement (mut query: Query<&mut physical::Velocity, With<Board>>, keyboard_input: Res<Input<input::keyboard::KeyCode>>) {
     
-    for mut global_transform in query.iter_mut() {
-        if keyboard_input.pressed(KeyCode::Up) | keyboard_input.pressed(KeyCode::W) {
-            global_transform.translation.y += 5.;
+    for mut velocity in query.iter_mut() {
+        if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
+            velocity.y = 5.;
         }
-        if keyboard_input.pressed(KeyCode::Down) | keyboard_input.pressed(KeyCode::S) {
-            global_transform.translation.y -= 5.;
+        if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
+            velocity.y = - 5.;
         }
-        if keyboard_input.pressed(KeyCode::Left) | keyboard_input.pressed(KeyCode::A) {
-            global_transform.translation.x -= 5.;
+        if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
+            velocity.x = - 5.;
         }
-        if keyboard_input.pressed(KeyCode::Right) | keyboard_input.pressed(KeyCode::D) {
-            global_transform.translation.x += 5.;
+        if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D) {
+            velocity.x = 5.;
         }
     }
 }
