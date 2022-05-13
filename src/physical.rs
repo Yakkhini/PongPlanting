@@ -1,5 +1,7 @@
 use bevy::{prelude::*, sprite::collide_aabb};
 
+use crate::board;
+
 #[derive(Component)]
 pub struct Velocity {
     pub x: f32,
@@ -49,6 +51,7 @@ impl Plugin for PhysicalPlugin {
         app.add_system(collide_event_writer);
         app.add_system(collision_event_handler);
         app.add_system(collide_box_update);
+        app.add_system(friction);
     }
 }
 
@@ -180,4 +183,16 @@ fn collision_event_handler (mut query: Query<(Entity, &mut Transform, &mut Veloc
 
         }
     }
+}
+
+fn friction (mut query: Query<&mut Velocity, With<board::Board>>) {
+    let mut velocity = query.single_mut();
+    velocity.x = velocity.x * 0.8;
+    velocity.y = velocity.y * 0.8;
+    if velocity.x * velocity.x < 0.05 {
+        velocity.x = 0.0;
+    }
+    if velocity.y * velocity.y < 0.05 {
+        velocity.y = 0.0;
+    } 
 }
