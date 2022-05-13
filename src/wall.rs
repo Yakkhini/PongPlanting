@@ -38,11 +38,11 @@ pub fn spawn_bgwall(
 
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite { 
-            custom_size: Some(Vec2::new(1980.0, 10.0)),
+            custom_size: Some(Vec2::new(1980.0, 20.0)),
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(0.0, 545.0, 0.0),
+            translation: Vec3::new(0.0, 550.0, 0.0),
             ..default()
         },
         //texture: assets_sever.load("sprites/bg.png"),
@@ -50,18 +50,19 @@ pub fn spawn_bgwall(
     })
     .insert(TopWall)
     .insert(physical::AABBCollideBox {
-        height: 10.0,
+        height: 20.0,
         width: 1980.0,
+        platform: true,
         ..default()
     });
 
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite { 
-            custom_size: Some(Vec2::new(1980.0, 10.0)),
+            custom_size: Some(Vec2::new(1980.0, 20.0)),
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(0.0, -545.0, 0.0),
+            translation: Vec3::new(0.0, -550.0, 0.0),
             ..default()
         },
         //texture: assets_sever.load("sprites/bg.png"),
@@ -69,18 +70,19 @@ pub fn spawn_bgwall(
     })
     .insert(BottomWall)
     .insert(physical::AABBCollideBox {
-        height: 10.0,
+        height: 20.0,
         width: 1980.0,
+        platform: true,
         ..default()
     });
 
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite { 
-            custom_size: Some(Vec2::new(10.0, 1080.0)),
+            custom_size: Some(Vec2::new(20.0, 1080.0)),
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(-995.0, 0.0, 0.0),
+            translation: Vec3::new(-1000.0, 0.0, 0.0),
             ..default()
         },
         //texture: assets_sever.load("sprites/bg.png"),
@@ -89,17 +91,18 @@ pub fn spawn_bgwall(
     .insert(LeftWall)
     .insert(physical::AABBCollideBox {
         height: 1080.0,
-        width: 10.0,
+        width: 20.0,
+        platform: true,
         ..default()
     });
 
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite { 
-            custom_size: Some(Vec2::new(10.0, 1080.0)),
+            custom_size: Some(Vec2::new(20.0, 1080.0)),
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(995.0, 0.0, 0.0),
+            translation: Vec3::new(1000.0, 0.0, 0.0),
             ..default()
         },
         //texture: assets_sever.load("sprites/bg.png"),
@@ -108,7 +111,8 @@ pub fn spawn_bgwall(
     .insert(RightWall)
     .insert(physical::AABBCollideBox {
         height: 1080.0,
-        width: 10.0,
+        width: 20.0,
+        platform: true,
         ..default()
     });
 }

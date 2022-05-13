@@ -74,7 +74,7 @@ fn collide_box_update (
 }
 
 fn collide_check(&subject: &(&AABBCollideBox, GlobalTransform, Entity),
-    &object: &(&AABBCollideBox, &GlobalTransform, Entity)) -> 
+    &object: &(&AABBCollideBox, GlobalTransform, Entity)) -> 
     Vec3 {
         let mut result = subject.1.translation.clone();
         let check_result = collide_aabb::collide(
@@ -89,16 +89,24 @@ fn collide_check(&subject: &(&AABBCollideBox, GlobalTransform, Entity),
                 let check_result = check_result.unwrap();
                 match check_result {
                     collide_aabb::Collision::Left => {
-                        result.x += object.0.x_min - subject.0.x_max;
+                        if subject.0.platform == false {
+                            result.x += object.0.x_min - subject.0.x_max;
+                        }
                     },
                     collide_aabb::Collision::Right => {
-                        result.x += object.0.x_max - subject.0.x_min;
+                        if subject.0.platform == false {
+                            result.x += object.0.x_max - subject.0.x_min;
+                        }
                     },
                     collide_aabb::Collision::Top => {
-                        result.y += object.0.y_max - subject.0.y_min;
+                        if subject.0.platform == false {
+                            result.y += object.0.y_max - subject.0.y_min;
+                        }
                     },
                     collide_aabb::Collision::Bottom => {
-                        result.y += object.0.y_min - subject.0.y_max;
+                        if subject.0.platform == false {
+                            result.y += object.0.y_min - subject.0.y_max;
+                        }
                     },
                     collide_aabb::Collision::Inside => {
                         
@@ -119,10 +127,12 @@ fn collide_event_writer(
     while let Some([(staff1_box, staff1_position, staff1),
     (staff2_box, staff2_position, staff2)]) = combinations.fetch_next() {
         let mut subject = (staff1_box, staff1_position.clone(), staff1);
-        let object = (staff2_box, staff2_position, staff2);
+        let mut object = (staff2_box, staff2_position.clone(), staff2);
         subject.1.translation = collide_check(&subject, &object).clone();
+        object.1.translation = collide_check(&object, &subject).clone();
         
-        if subject.1.translation != staff1_position.translation {
+        if subject.1.translation != staff1_position.translation ||
+        object.1.translation != staff2_position.translation {
             events.send(CollisionEvent {
                 subject: subject.2,
                 object: object.2,
