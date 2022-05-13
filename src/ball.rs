@@ -27,6 +27,7 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
     .insert(physical::AABBCollideBox {
         height: 30.0,
         width:30.0,
+        platform: false,
         ..default()
     });
 }
