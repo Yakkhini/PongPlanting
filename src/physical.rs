@@ -68,7 +68,7 @@ fn collide_box_update (
         collide_box.x_max = translation.x + width * 0.5;
         collide_box.y_min = translation.y - height * 0.5;
         collide_box.y_max = translation.y + height * 0.5;
-        println!("{:?}, {:?}", collide_box, translation);
+        //println!("{:?}, {:?}", collide_box, translation);
         
     }
 }
@@ -121,12 +121,15 @@ fn collide_event_writer(
         let mut subject = (staff1_box, staff1_position.clone(), staff1);
         let object = (staff2_box, staff2_position, staff2);
         subject.1.translation = collide_check(&subject, &object).clone();
-        events.send(CollisionEvent {
-            subject: subject.2,
-            object: object.2,
-            subject_transform: subject.1.clone(),
-            object_transform: object.1.clone(),
-        })
+        
+        if subject.1.translation != staff1_position.translation {
+            events.send(CollisionEvent {
+                subject: subject.2,
+                object: object.2,
+                subject_transform: subject.1.clone(),
+                object_transform: object.1.clone(),
+            })
+        }
         
     }
 }
@@ -135,6 +138,7 @@ fn collision_event_handler (mut query: Query<(Entity, &mut Transform)>,
     mut event_handler: EventReader<CollisionEvent>
 ) {
     for cillision_event in event_handler.iter() {
+        println!("{:?}, {:?}", cillision_event.subject, cillision_event.object);
         for mut staff in query.iter_mut() {
             if staff.0 == cillision_event.subject {
                 staff.1.translation = cillision_event.subject_transform.translation;
