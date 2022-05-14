@@ -1,6 +1,6 @@
 use bevy::{prelude::*, sprite::collide_aabb};
 
-use crate::{board, ball};
+use crate::{board, ball, appstate};
 
 #[derive(Component, Debug)]
 pub struct Velocity {
@@ -47,13 +47,13 @@ pub struct PhysicalPlugin;
 impl Plugin for PhysicalPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<CollisionEvent>();
-        app.add_system(movement);
-        app.add_system(collide_event_writer);
-        app.add_system(collision_event_handler);
-        app.add_system(collide_box_update);
-        app.add_system(friction);
-        app.add_system(board_collision);
-        app.add_system(ball_collision.before(collision_event_handler));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(movement));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(collide_event_writer));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(collision_event_handler));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(collide_box_update));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(friction));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(board_collision));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(ball_collision.before(collision_event_handler)));
     }
 }
 

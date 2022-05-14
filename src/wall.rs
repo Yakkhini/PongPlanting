@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::physical;
+use crate::{physical, appstate};
 
 
 #[derive(Component)]
@@ -115,4 +115,11 @@ pub fn spawn_bgwall(
         platform: true,
         ..default()
     });
+}
+
+pub struct WallPlugin;
+impl Plugin for WallPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set(SystemSet::on_enter(appstate::AppState::InGame).with_system(spawn_bgwall));
+    }
 }

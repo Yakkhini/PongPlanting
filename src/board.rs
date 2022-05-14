@@ -1,6 +1,6 @@
 use bevy::{prelude::*, input};
 
-use crate::physical;
+use crate::{physical, appstate};
 
 #[derive(Component)]
 pub struct Board;
@@ -46,5 +46,13 @@ pub fn board_movement (mut query: Query<&mut physical::Velocity, With<Board>>, k
         if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D) {
             velocity.x = 10.;
         }
+    }
+}
+
+pub struct BoardPlugin;
+impl Plugin for BoardPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set(SystemSet::on_enter(appstate::AppState::InGame).with_system(spawn_board));
+        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(board_movement));
     }
 }

@@ -22,12 +22,11 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(appstate::StatesPlugin)
         .add_plugin(physical::PhysicalPlugin)
+        .add_plugin(board::BoardPlugin)
+        .add_plugin(ball::BallPlugin)
+        .add_plugin(wall::WallPlugin)
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
-        .add_startup_system(board::spawn_board)
-        .add_startup_system(ball::spawn_ball)
-        .add_startup_system(wall::spawn_bgwall)
-        .add_system(board::board_movement)
         .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .run();
 }

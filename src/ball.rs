@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::physical;
+use crate::{physical, appstate};
 
 
 #[derive(Component)]
@@ -30,4 +30,11 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
         platform: false,
         ..default()
     });
+}
+
+pub struct BallPlugin;
+impl Plugin for BallPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system_set(SystemSet::on_enter(appstate::AppState::InGame).with_system(spawn_ball));
+    }
 }
