@@ -1,5 +1,6 @@
 use bevy::{prelude::*, window::{PresentMode, WindowMode}};
 
+mod appstate;
 mod physical;
 mod board;
 mod ball;
@@ -19,6 +20,7 @@ fn main() {
             ..default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugin(appstate::StatesPlugin)
         .add_plugin(physical::PhysicalPlugin)
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
