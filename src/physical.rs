@@ -234,22 +234,37 @@ fn ball_collision(
         if staff.2 == collision_event.subject {
             let mut direction = (collision_event.subject_transform.translation - staff.1.translation).truncate();
             direction -= Vec2::new(staff.0.x, staff.0.y);
-            let k1 = direction.x / (direction.x * direction.x + direction.y * direction.y).sqrt();
-            let k2 = direction.y / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            let mut k1 = direction.x / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            let mut k2 = direction.y / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            
+            if k1 * k1 < 0.08 {
+                k1 = 0.3;
+                k2 = 0.9;
+            } else if k2 * k2 < 0.16 {
+                k2 = 0.4;
+                k1 = 0.9;
+            }
             if collision_event.subject_axis == "x".to_string() {
-                (staff.0.x, staff.0.y) = (k1 * 5.0, - k2 * 5.0);
+                (staff.0.x, staff.0.y) = (k1 * 8.0, - k2 * 8.0);
             } else if collision_event.subject_axis == "y".to_string() {
-                (staff.0.x, staff.0.y) = (- k1 * 5.0, k2 * 5.0);
+                (staff.0.x, staff.0.y) = (- k1 * 8.0, k2 * 8.0);
             }
         } else if staff.2 == collision_event.object {
             let mut direction = (collision_event.object_transform.translation - staff.1.translation).truncate();
             direction -= Vec2::new(staff.0.x, staff.0.y);
-            let k1 = direction.x / (direction.x * direction.x + direction.y * direction.y).sqrt();
-            let k2 = direction.y / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            let mut k1 = direction.x / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            let mut  k2 = direction.y / (direction.x * direction.x + direction.y * direction.y).sqrt();
+            if k1 * k1 < 0.08 {
+                k1 = 0.3;
+                k2 = 0.9;
+            } else if k2 * k2 < 0.16 {
+                k2 = 0.4;
+                k1 = 0.9;
+            }
             if collision_event.object_axis == "x".to_string() {
-                (staff.0.x, staff.0.y) = (k1 * 5.0, - k2 * 5.0);
+                (staff.0.x, staff.0.y) = (k1 * 8.0, - k2 * 8.0);
             } else if collision_event.object_axis == "y".to_string() {
-                (staff.0.x, staff.0.y) = (- k1 * 5.0, k2 * 5.0);
+                (staff.0.x, staff.0.y) = (- k1 * 8.0, k2 * 8.0);
             }
         }
     }

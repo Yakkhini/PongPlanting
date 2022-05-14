@@ -12,7 +12,7 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(0.0, -200.0, 1.0),
+            translation: Vec3::new(0.0, -400.0, 1.0),
             ..default()
         },
         texture: assets_server.load("sprites/Sprite-0001.png"),
@@ -35,16 +35,16 @@ pub fn board_movement (mut query: Query<&mut physical::Velocity, With<Board>>, k
     
     for mut velocity in query.iter_mut() {
         if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
-            velocity.y = 5.;
+            velocity.y = 3.;
         }
         if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
-            velocity.y = - 5.;
+            velocity.y = - 3.;
         }
         if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
-            velocity.x = - 5.;
+            velocity.x = - 10.;
         }
         if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D) {
-            velocity.x = 5.;
+            velocity.x = 10.;
         }
     }
 }
