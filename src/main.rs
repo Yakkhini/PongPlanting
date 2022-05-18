@@ -1,5 +1,6 @@
 use bevy::{prelude::*, window::{PresentMode, WindowMode}};
 
+mod background;
 mod appstate;
 mod physical;
 mod board;
@@ -21,13 +22,13 @@ fn main() {
         })
         .add_plugins(DefaultPlugins)
         .add_plugin(appstate::StatesPlugin)
+        .add_plugin(background::BackgroundPlugin {})
         .add_plugin(physical::PhysicalPlugin)
         .add_plugin(board::BoardPlugin)
         .add_plugin(ball::BallPlugin)
         .add_plugin(wall::WallPlugin)
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
-        .insert_resource(ClearColor(Color::rgb(0.4, 0.4, 0.4)))
         .run();
 }
 

@@ -13,7 +13,7 @@ pub fn spawn_ball (mut commands: Commands, assets_server: Res<AssetServer>) {
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(0.0, 0.0, 1.0),
+            translation: Vec3::new(0.0, 0.0, 2.0),
             ..default()
         },
         texture: assets_server.load("sprites/Ball-texture.png"),

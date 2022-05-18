@@ -12,7 +12,7 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
             ..default()
         },
         transform: Transform {
-            translation: Vec3::new(0.0, -400.0, 1.0),
+            translation: Vec3::new(0.0, -400.0, 2.0),
             ..default()
         },
         texture: assets_server.load("sprites/Sprite-0001.png"),

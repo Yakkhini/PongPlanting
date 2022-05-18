@@ -24,20 +24,6 @@ pub fn spawn_bgwall(
 ) {
     commands.spawn_bundle(SpriteBundle {
         sprite: Sprite { 
-            custom_size: Some(Vec2::new(1980.0, 1080.0)),
-            ..default()
-        },
-        transform: Transform {
-            translation: Vec3::new(0.0, 0.0, 0.0),
-            ..default()
-        },
-        //texture: assets_sever.load("sprites/bg.png"),
-        ..default()
-    })
-    .insert(BackGroundWall);
-
-    commands.spawn_bundle(SpriteBundle {
-        sprite: Sprite { 
             custom_size: Some(Vec2::new(1980.0, 20.0)),
             ..default()
         },
