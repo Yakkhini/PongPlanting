@@ -45,6 +45,9 @@ pub fn spawn_ball(mut commands: Commands, assets_server: Res<AssetServer>) {
 pub struct BallPlugin;
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_enter(appstate::AppState::InGame).with_system(spawn_ball));
+        app.add_system_set(
+            SystemSet::on_enter(appstate::AppState::InGame)
+                .with_system(spawn_ball.after("spawn wall")),
+        );
     }
 }

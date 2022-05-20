@@ -14,6 +14,7 @@ use bevy::{
     prelude::*,
     window::{PresentMode, WindowMode},
 };
+use bevy_inspector_egui::WorldInspectorPlugin;
 
 mod appstate;
 mod background;
@@ -33,18 +34,19 @@ fn main() {
             position: Some(Vec2::new(0.0, 0.0)),
             scale_factor_override: Some(1.0),
             present_mode: PresentMode::Mailbox,
-            #[doc(alias = "vsync")]
             resizable: false,
             mode: WindowMode::Fullscreen,
             ..default()
         })
         .add_plugins(DefaultPlugins)
+        .add_plugin(WorldInspectorPlugin::new())
+        //DEBUG PLUGIN
         .add_plugin(appstate::StatesPlugin)
         .add_plugin(background::BackgroundPlugin {})
-        .add_plugin(physical::PhysicalPlugin)
         .add_plugin(board::BoardPlugin)
         .add_plugin(ball::BallPlugin)
         .add_plugin(wall::WallPlugin)
+        .add_plugin(physical::PhysicalPlugin)
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
         .run();

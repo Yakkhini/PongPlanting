@@ -29,7 +29,7 @@ pub struct LeftWall;
 #[derive(Component)]
 pub struct RightWall;
 
-pub fn spawn_bgwall(
+pub fn spawn_wall(
     mut commands: Commands,
     //assets_sever: Res<AssetServer>
 ) {
@@ -122,7 +122,9 @@ pub struct WallPlugin;
 impl Plugin for WallPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
-            SystemSet::on_enter(appstate::AppState::InGame).with_system(spawn_bgwall),
+            SystemSet::on_enter(appstate::AppState::InGame)
+                .label("spawn wall")
+                .with_system(spawn_wall),
         );
     }
 }

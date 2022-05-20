@@ -66,7 +66,8 @@ pub struct BoardPlugin;
 impl Plugin for BoardPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
-            SystemSet::on_enter(appstate::AppState::InGame).with_system(spawn_board),
+            SystemSet::on_enter(appstate::AppState::InGame)
+                .with_system(spawn_board.after("spawn wall")),
         );
         app.add_system_set(
             SystemSet::on_update(appstate::AppState::InGame)
