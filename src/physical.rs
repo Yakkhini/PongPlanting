@@ -291,23 +291,22 @@ pub struct PhysicalPlugin;
 impl Plugin for PhysicalPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<CollisionEvent>();
-        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(movement));
         app.add_system_set(
-            SystemSet::on_update(appstate::AppState::InGame).with_system(collide_event_writer),
-        );
-        app.add_system_set(
-            SystemSet::on_update(appstate::AppState::InGame).with_system(collision_event_handler),
-        );
-        app.add_system_set(
-            SystemSet::on_update(appstate::AppState::InGame).with_system(collide_box_update),
-        );
-        app.add_system_set(SystemSet::on_update(appstate::AppState::InGame).with_system(friction));
-        app.add_system_set(
-            SystemSet::on_update(appstate::AppState::InGame).with_system(board_collision),
+            SystemSet::on_update(appstate::AppState::InGame)
+                .label("movement")
+                .after("collision")
+                .with_system(movement)
+                .with_system(friction)
+                .with_system(collide_box_update)
+                .with_system(collide_event_writer.after("collision")),
         );
         app.add_system_set(
             SystemSet::on_update(appstate::AppState::InGame)
-                .with_system(ball_collision.before(collision_event_handler)),
+                .label("collision")
+                .with_system(collision_event_handler)
+                .with_system(board_collision)
+                .with_system(ball_collision)
+                .with_system(collide_box_update),
         );
     }
 }
