@@ -10,7 +10,7 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 */
 
-use bevy::{input, prelude::*};
+use bevy::{core::FixedTimestep, input, prelude::*};
 
 use crate::{appstate, physical};
 
@@ -33,6 +33,7 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
         })
         .insert(Board)
         .insert(physical::Velocity { x: 0.0, y: 0.0 })
+        .insert(physical::Touch { check: false })
         .insert(physical::AABBCollideBox {
             height: 70.0,
             width: 160.0,
@@ -47,16 +48,16 @@ pub fn board_movement(
 ) {
     for mut velocity in query.iter_mut() {
         if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
-            velocity.y = 3.;
+            velocity.y = 10.;
         }
         if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
-            velocity.y = -3.;
+            velocity.y = -10.;
         }
         if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
-            velocity.x = -10.;
+            velocity.x = -40.;
         }
         if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D) {
-            velocity.x = 10.;
+            velocity.x = 40.;
         }
     }
 }
@@ -68,7 +69,9 @@ impl Plugin for BoardPlugin {
             SystemSet::on_enter(appstate::AppState::InGame).with_system(spawn_board),
         );
         app.add_system_set(
-            SystemSet::on_update(appstate::AppState::InGame).with_system(board_movement),
+            SystemSet::on_update(appstate::AppState::InGame)
+                .with_run_criteria(FixedTimestep::step(0.08))
+                .with_system(board_movement.after("collision")),
         );
     }
 }
