@@ -7,15 +7,18 @@ mod board;
 mod ball;
 mod wall;
 
+pub const RESOLUTION: f32 = 16.0 / 9.0;
+
 fn main() {
     App::new()
         .insert_resource(WindowDescriptor {
             title: "Planting Pong".to_string(),
-            width: 1980.,
-            height: 1080.,
+            width: 1080.0 * RESOLUTION,
+            height: 1080.0,
             position: Some(Vec2::new(0.0, 0.0)),
             scale_factor_override: Some(1.0),
             present_mode: PresentMode::Mailbox,
+            #[doc(alias = "vsync")]
             resizable: false,
             mode: WindowMode::Fullscreen,
             ..default()

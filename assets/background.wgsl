@@ -51,38 +51,54 @@ fn vertex(vertex: Vertex) -> VertexOutput {
     return out;
 }
 [[stage(fragment)]]
-fn fragment(in: VertexOutput) -> [[location(0)]] vec4<f32> {
-    let dir = vec3<f32>(in.uv*zoom,1.0);
-    let time = base_time.time*speed+0.25;
-    var from = vec3<f32>(1.0,0.5,0.5);
-    from = from + vec3<f32>(time*2.,time,-2.);
+//fn fragment(in: VertexOutput) -> [[location(0)]] vec4<f32> {
+ //   let dir = vec3<f32>(in.uv*zoom,1.0);
+  //  let time = base_time.time*speed+0.25;
+  //  var from = vec3<f32>(1.0,0.5,0.5);
+  //  from = from + vec3<f32>(time*2.,time,-2.);
     
     // volumetric rendering
-    var s = 0.1;
-    var fade = 1.0;
-    var v = vec3<f32>(0.);
-    for ( var r=0; r<volsteps; r = r+1) {
-        var p = from+s*dir*0.5;
-        p = abs(vec3<f32>(tile)- (p % vec3<f32>(tile*2.0)));
+  //  var s = 0.1;
+   // var fade = 1.0;
+   // var v = vec3<f32>(0.);
+  //  for ( var r=0; r<volsteps; r = r+1) {
+//        var p = from+s*dir*0.5;
+//        p = abs(vec3<f32>(tile)- (p % vec3<f32>(tile*2.0)));
+//
+//        var pa = 0.0;
+//        var a = 0.0;
+//        for (var i=0;i<iterations; i = i+1) {
+//            p = abs(p) / dot(p,p) - formuparam; // the magic formula
+//            a = a + abs(length(p)-pa); // absolute sum of average change
+//            pa = length(p);
+//        }
+//        
+//        let dm = max(0.0,darkmatter-a*a*0.001); // dark matter
+//        a = a*a*a; // add contrast
+///        if (r>6) {
+//            fade = fade * (1.-dm); // dark matter, don't render near
+//        }
+//        v = v + fade;
+//        v = v + vec3<f32>(s, s*s, s*s*s*s)*a*brightness*fade; // coloring based on distance
+//        fade = fade * distfading; // distance fading;
+//        s = s + stepsize;
+//    }
+//    v = mix( vec3<f32>(length(v)) , v,saturation); // color_adjust
+//    return vec4<f32>(v*0.0006,1.0);
+//}
+fn fragment(in: VertexOutput) -> [[location(0)]] vec4<f32> {
+    let time = base_time.time;
+    let st= vec3<f32>(in.uv, 1.0);
+    let y:f32 = smoothStep(-1.0, 1.0, time);
 
-        var pa = 0.0;
-        var a = 0.0;
-        for (var i=0;i<iterations; i = i+1) {
-            p = abs(p) / dot(p,p) - formuparam; // the magic formula
-            a = a + abs(length(p)-pa); // absolute sum of average change
-            pa = length(p);
-        }
-        
-        let dm = max(0.0,darkmatter-a*a*0.001); // dark matter
-        a = a*a*a; // add contrast
-        if (r>6) {
-            fade = fade * (1.-dm); // dark matter, don't render near
-        }
-        v = v + fade;
-        v = v + vec3<f32>(s, s*s, s*s*s*s)*a*brightness*fade; // coloring based on distance
-        fade = fade * distfading; // distance fading;
-        s = s + stepsize;
-    }
-    v = mix( vec3<f32>(length(v)) , v,saturation); // color_adjust
-    return vec4<f32>(v*0.0006,1.0);
+    var color = vec3<f32>(y + 0.35,y,y);
+    //Plot a line using Plot function
+    let pct:f32 = smoothStep(abs( sin(time + (3.1415926) / 2.0)) * abs(cos(st.x)), 0.0, abs(st.y - 1.0 + st.x));
+    color = (1.0 - pct) * color + pct * vec3<f32>(1.0,0.7,1.0);
+    return vec4<f32>(color,1.0);
+
+}
+
+fn Plot(st:vec3<f32>, time:f32) -> f32 {
+    return smoothStep(abs( sin(time + (3.1415926) / 2.0)) * abs(cos(st.x)), 0.0, abs(st.y - 1.0 + st.x));
 }
