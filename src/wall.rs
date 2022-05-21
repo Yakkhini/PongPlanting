@@ -57,7 +57,8 @@ pub fn spawn_top_wall(
             width: 1980.0,
             platform: true,
             ..default()
-        });
+        })
+        .insert(physical::Velocity { x: 0.0, y: 0.0 });
 }
 
 pub fn spawn_bottom_wall(
@@ -88,7 +89,8 @@ pub fn spawn_bottom_wall(
             width: 1980.0,
             platform: true,
             ..default()
-        });
+        })
+        .insert(physical::Velocity { x: 0.0, y: 0.0 });
 }
 
 pub fn spawn_left_wall(
@@ -119,7 +121,8 @@ pub fn spawn_left_wall(
             width: 20.0,
             platform: true,
             ..default()
-        });
+        })
+        .insert(physical::Velocity { x: 0.0, y: 0.0 });
 }
 
 pub fn spawn_right_wall(
@@ -150,7 +153,8 @@ pub fn spawn_right_wall(
             width: 20.0,
             platform: true,
             ..default()
-        });
+        })
+        .insert(physical::Velocity { x: 0.0, y: 0.0 });
 }
 
 pub struct WallPlugin;

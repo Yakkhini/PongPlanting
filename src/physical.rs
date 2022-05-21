@@ -27,6 +27,7 @@ pub struct Touch {
 
 #[derive(Component, Debug, PartialEq)]
 pub struct AABBCollideBox {
+    pub collsion_state: bool,
     pub x_min: f32,
     pub x_max: f32,
     pub y_min: f32,
@@ -39,6 +40,7 @@ pub struct AABBCollideBox {
 impl Default for AABBCollideBox {
     fn default() -> Self {
         Self {
+            collsion_state: false,
             x_min: 0.0,
             x_max: 0.0,
             y_min: 0.0,
@@ -55,24 +57,22 @@ struct CollisionEvent {
     object: Entity,
     subject_transform: GlobalTransform,
     object_transform: GlobalTransform,
-    subject_axis: String,
-    object_axis: String,
+    collision_axis: String,
 }
 
-fn movement(mut query: Query<(&mut GlobalTransform, &Velocity)>, time: Res<Time>) {
-    for (mut global_transform, volocity) in query.iter_mut() {
-        global_transform.translation.x += volocity.x * time.delta_seconds() * 10.0;
-        global_transform.translation.y += volocity.y * time.delta_seconds() * 10.0;
+fn movement(mut query: Query<(&mut Transform, &Velocity, &AABBCollideBox)>, time: Res<Time>) {
+    for (mut transform, volocity, collide_box) in query.iter_mut() {
+        if collide_box.platform == false {
+            transform.translation.x += volocity.x * time.delta_seconds() * 10.0;
+            transform.translation.y += volocity.y * time.delta_seconds() * 10.0;
+        }
     }
 }
 
-fn collide_box_update(mut query_box: Query<(&mut AABBCollideBox, &GlobalTransform)>) {
-    for (mut collide_box, global_transform) in query_box.iter_mut() {
-        let (translation, height, width) = (
-            global_transform.translation,
-            collide_box.height,
-            collide_box.width,
-        );
+fn collide_box_update(mut query_box: Query<(&mut AABBCollideBox, &Transform)>) {
+    for (mut collide_box, transform) in query_box.iter_mut() {
+        let (translation, height, width) =
+            (transform.translation, collide_box.height, collide_box.width);
         collide_box.x_min = translation.x - width * 0.5;
         collide_box.x_max = translation.x + width * 0.5;
         collide_box.y_min = translation.y - height * 0.5;
@@ -82,15 +82,27 @@ fn collide_box_update(mut query_box: Query<(&mut AABBCollideBox, &GlobalTransfor
 }
 
 fn collide_check(
-    &subject: &(&AABBCollideBox, GlobalTransform, Entity),
-    &object: &(&AABBCollideBox, GlobalTransform, Entity),
-) -> (Vec3, String) {
-    let mut result = subject.1.translation.clone();
+    &subject: &(&Mut<AABBCollideBox>, GlobalTransform, &Velocity, Entity),
+    &object: &(&Mut<AABBCollideBox>, GlobalTransform, &Velocity, Entity),
+    time: &Res<Time>,
+) -> (Vec3, Vec3, String) {
+    let mut result_subject = subject.1.translation.clone();
+    let mut result_object = object.1.translation.clone();
     let mut axis = String::new();
     let check_result = collide_aabb::collide(
-        subject.1.translation,
+        subject.1.translation
+            + Vec3::new(
+                subject.2.x * time.delta_seconds() * 10.0,
+                subject.2.y * time.delta_seconds() * 10.0,
+                0.0,
+            ),
         Vec2::new(subject.0.width, subject.0.height),
-        object.1.translation,
+        object.1.translation
+            + Vec3::new(
+                object.2.x * time.delta_seconds() * 10.0,
+                object.2.y * time.delta_seconds() * 10.0,
+                0.0,
+            ),
         Vec2::new(object.0.width, object.0.height),
     );
 
@@ -98,49 +110,58 @@ fn collide_check(
         Some(_) => {
             let check_result = check_result.unwrap();
             match check_result {
-                collide_aabb::Collision::Left => {
-                    if subject.0.platform == false {
-                        match object.0.platform {
-                            true => {
-                                result.x += 1.1 * (object.0.x_min - subject.0.x_max);
-                            }
-                            false => {
-                                result.x += 0.5 * (object.0.x_min - subject.0.x_max);
-                            }
-                        }
-                        axis = "x".to_string();
+                collide_aabb::Collision::Left => match (subject.0.platform, object.0.platform) {
+                    (true, true) => {}
+                    (true, false) => {
+                        result_object.x += subject.0.x_max - object.0.x_min + 1.5;
                     }
-                }
-                collide_aabb::Collision::Right => {
-                    if subject.0.platform == false {
-                        match object.0.platform {
-                            true => {
-                                result.x += 1.1 * (object.0.x_max - subject.0.x_min);
-                            }
-                            false => {
-                                result.x += 0.5 * (object.0.x_max - subject.0.x_min);
-                            }
-                        }
-                        axis = "x".to_string();
+                    (false, true) => {
+                        result_subject.x += object.0.x_min - subject.0.x_max - 1.5;
                     }
-                }
-                collide_aabb::Collision::Top => {
-                    if subject.0.platform == false {
-                        match object.0.platform {
-                            true => result.y += 1.1 * (object.0.y_max - subject.0.y_min),
-                            false => result.y += 0.5 * (object.0.y_max - subject.0.y_min),
-                        }
-                        axis = "y".to_string();
+                    (false, false) => {
+                        result_object.x += 0.5 * (subject.0.x_max - object.0.x_min + 1.5);
+                        result_subject.x += 0.5 * (object.0.x_min - subject.0.x_max - 1.5);
                     }
-                }
+                },
+                collide_aabb::Collision::Right => match (subject.0.platform, object.0.platform) {
+                    (true, true) => {}
+                    (true, false) => {
+                        result_object.x += subject.0.x_min - object.0.x_max - 1.5;
+                    }
+                    (false, true) => {
+                        result_subject.x += object.0.x_max - subject.0.x_min + 1.5;
+                    }
+                    (false, false) => {
+                        result_object.x += 0.5 * (subject.0.x_min - object.0.x_max - 1.5);
+                        result_subject.x += 0.5 * (object.0.x_max - subject.0.x_min + 1.5);
+                    }
+                },
+                collide_aabb::Collision::Top => match (subject.0.platform, object.0.platform) {
+                    (true, true) => {}
+                    (true, false) => {
+                        result_object.y += subject.0.y_min - subject.0.y_max - 1.5;
+                    }
+                    (false, true) => {
+                        result_subject.y += object.0.y_max - subject.0.y_min + 1.5;
+                    }
+                    (false, false) => {
+                        result_object.y += 0.5 * (subject.0.y_min - subject.0.y_max - 1.5);
+                        result_subject.y += 0.5 * (object.0.y_max - subject.0.y_min + 1.5);
+                    }
+                },
                 collide_aabb::Collision::Bottom => {
                     if subject.0.platform == false {
-                        match object.0.platform {
-                            true => {
-                                result.y += 1.1 * (object.0.y_min - subject.0.y_max);
+                        match (subject.0.platform, object.0.platform) {
+                            (true, true) => {}
+                            (true, false) => {
+                                result_object.y += subject.0.y_max - subject.0.y_min + 1.5;
                             }
-                            false => {
-                                result.y += 0.5 * (object.0.y_min - subject.0.y_max);
+                            (false, true) => {
+                                result_subject.y += object.0.y_min - subject.0.y_max - 1.5;
+                            }
+                            (false, false) => {
+                                result_object.y += 0.5 * (subject.0.y_max - subject.0.y_min + 1.5);
+                                result_subject.y += 0.5 * (object.0.y_min - subject.0.y_max - 1.5);
                             }
                         }
                         axis = "y".to_string();
@@ -152,36 +173,51 @@ fn collide_check(
         None => {}
     }
 
-    return (result, axis);
+    //return (Vec3::new(0.0, 0.0, 0.0), Vec3::new(0.0, 0.0, 0.0), "x".to_string())
+    return (result_subject, result_object, axis);
 }
 
 fn collide_event_writer(
-    query: Query<(&AABBCollideBox, &GlobalTransform, Entity)>,
+    mut query: Query<(&mut AABBCollideBox, &GlobalTransform, &Velocity, Entity)>,
     mut events: EventWriter<CollisionEvent>,
+    time: Res<Time>,
 ) {
-    let mut combinations = query.iter_combinations();
-    while let Some([(staff1_box, staff1_position, staff1), (staff2_box, staff2_position, staff2)]) =
-        combinations.fetch_next()
+    let mut combinations = query.iter_combinations_mut();
+    while let Some(
+        [(mut staff1_box, staff1_position, staff1_velocity, staff1), (mut staff2_box, staff2_position, staff2_velocity, staff2)],
+    ) = combinations.fetch_next()
     {
-        let mut subject = (staff1_box, staff1_position.clone(), staff1);
-        let mut object = (staff2_box, staff2_position.clone(), staff2);
-        let (subject_position, subject_axis) = collide_check(&subject, &object);
-        let (objrct_position, object_axis) = collide_check(&object, &subject);
+        let mut subject = (
+            &staff1_box,
+            staff1_position.clone(),
+            staff1_velocity,
+            staff1,
+        );
+        let mut object = (
+            &staff2_box,
+            staff2_position.clone(),
+            staff2_velocity,
+            staff2,
+        );
+        let (subject_position, object_position, collision_axis) =
+            collide_check(&subject, &object, &time);
 
         subject.1.translation = subject_position;
-        object.1.translation = objrct_position;
+        object.1.translation = object_position;
 
         if subject.1.translation != staff1_position.translation
             || object.1.translation != staff2_position.translation
         {
             events.send(CollisionEvent {
-                subject: subject.2,
-                object: object.2,
+                subject: subject.3,
+                object: object.3,
                 subject_transform: subject.1.clone(),
                 object_transform: object.1.clone(),
-                subject_axis,
-                object_axis,
+                collision_axis,
             })
+        } else {
+            staff1_box.collsion_state = false;
+            staff2_box.collsion_state = false;
         }
     }
 }
@@ -221,15 +257,15 @@ fn board_collision(
     for collision_event in collision_event_reader.iter() {
         for mut staff in query.iter_mut() {
             if staff.0 == collision_event.subject {
-                if collision_event.subject_axis == "x".to_string() {
+                if collision_event.collision_axis == "x".to_string() {
                     staff.1.x = 0.0;
-                } else if collision_event.subject_axis == "y".to_string() {
+                } else if collision_event.collision_axis == "y".to_string() {
                     staff.1.y = 0.0;
                 }
             } else if staff.0 == collision_event.object {
-                if collision_event.object_axis == "x".to_string() {
+                if collision_event.collision_axis == "x".to_string() {
                     staff.1.x = 0.0;
-                } else if collision_event.object_axis == "y".to_string() {
+                } else if collision_event.collision_axis == "y".to_string() {
                     staff.1.y = 0.0;
                 }
             }
@@ -258,9 +294,9 @@ fn ball_collision(
                 k2 = 0.4 * k2.signum();
                 k1 = 0.9 * k1.signum();
             }
-            if collision_event.subject_axis == "x".to_string() {
+            if collision_event.collision_axis == "x".to_string() {
                 (staff.0.x, staff.0.y) = (k1 * 40.0, -k2 * 40.0);
-            } else if collision_event.subject_axis == "y".to_string() {
+            } else if collision_event.collision_axis == "y".to_string() {
                 (staff.0.x, staff.0.y) = (-k1 * 40.0, k2 * 40.0);
             }
         } else if staff.2 == collision_event.object {
@@ -277,9 +313,9 @@ fn ball_collision(
                 k2 = 0.4 * k2.signum();
                 k1 = 0.9 * k1.signum();
             }
-            if collision_event.object_axis == "x".to_string() {
+            if collision_event.collision_axis == "x".to_string() {
                 (staff.0.x, staff.0.y) = (k1 * 40.0, -k2 * 40.0);
-            } else if collision_event.object_axis == "y".to_string() {
+            } else if collision_event.collision_axis == "y".to_string() {
                 (staff.0.x, staff.0.y) = (-k1 * 40.0, k2 * 40.0);
             }
         }
@@ -303,8 +339,8 @@ impl Plugin for PhysicalPlugin {
             SystemSet::on_update(appstate::AppState::InGame)
                 .label("collision")
                 .with_system(collision_event_handler)
-                .with_system(board_collision.before(collision_event_handler))
-                .with_system(ball_collision.before(collision_event_handler))
+                .with_system(board_collision)
+                .with_system(ball_collision)
                 .with_system(collide_box_update),
         );
     }
