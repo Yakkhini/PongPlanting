@@ -32,6 +32,7 @@ pub fn spawn_ball(mut commands: Commands, assets_server: Res<AssetServer>) {
             ..default()
         })
         .insert(Ball)
+        .insert(Name::new("Ball"))
         .insert(physical::Velocity { x: 20.0, y: -20.0 })
         .insert(physical::Touch { check: false })
         .insert(physical::AABBCollideBox {

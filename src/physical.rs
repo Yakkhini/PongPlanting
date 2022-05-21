@@ -187,7 +187,7 @@ fn collide_event_writer(
 }
 
 fn collision_event_handler(
-    mut query: Query<(Entity, &mut GlobalTransform)>,
+    mut query: Query<(Entity, &mut Transform)>,
     mut event_handler: EventReader<CollisionEvent>,
 ) {
     for collision_event in event_handler.iter() {

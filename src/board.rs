@@ -32,6 +32,7 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
             ..default()
         })
         .insert(Board)
+        .insert(Name::new("Board"))
         .insert(physical::Velocity { x: 0.0, y: 0.0 })
         .insert(physical::Touch { check: false })
         .insert(physical::AABBCollideBox {
