@@ -15,12 +15,12 @@ use bevy::{
     window::{PresentMode, WindowMode},
 };
 use bevy_inspector_egui::WorldInspectorPlugin;
+use heron::prelude::*;
 
 mod appstate;
 mod background;
 mod ball;
 mod board;
-mod physical;
 mod wall;
 
 pub const RESOLUTION: f32 = 16.0 / 9.0;
@@ -46,7 +46,7 @@ fn main() {
         .add_plugin(board::BoardPlugin)
         .add_plugin(ball::BallPlugin)
         .add_plugin(wall::WallPlugin)
-        .add_plugin(physical::PhysicalPlugin)
+        .add_plugin(PhysicsPlugin::default())
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
         .run();

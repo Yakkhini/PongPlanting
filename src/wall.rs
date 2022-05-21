@@ -11,8 +11,9 @@ See the Mulan PSL v2 for more details.
 */
 
 use bevy::prelude::*;
+use heron::prelude::*;
 
-use crate::{appstate, physical};
+use crate::appstate;
 
 #[derive(Component)]
 pub struct BackGroundWall;
@@ -52,13 +53,11 @@ pub fn spawn_top_wall(
         })
         .insert(TopWall)
         .insert(Name::new("TopWall"))
-        .insert(physical::AABBCollideBox {
-            height: 20.0,
-            width: 1980.0,
-            platform: true,
-            ..default()
-        })
-        .insert(physical::Velocity { x: 0.0, y: 0.0 });
+        .insert(RigidBody::Static)
+        .insert(CollisionShape::Cuboid {
+            half_extends: Vec3::new(990.0, 10.0, 0.0),
+            border_radius: Some(0.0),
+        });
 }
 
 pub fn spawn_bottom_wall(
@@ -84,13 +83,11 @@ pub fn spawn_bottom_wall(
         })
         .insert(BottomWall)
         .insert(Name::new("BottomWall"))
-        .insert(physical::AABBCollideBox {
-            height: 20.0,
-            width: 1980.0,
-            platform: true,
-            ..default()
-        })
-        .insert(physical::Velocity { x: 0.0, y: 0.0 });
+        .insert(RigidBody::Static)
+        .insert(CollisionShape::Cuboid {
+            half_extends: Vec3::new(990.0, 10.0, 0.0),
+            border_radius: Some(0.0),
+        });
 }
 
 pub fn spawn_left_wall(
@@ -116,13 +113,11 @@ pub fn spawn_left_wall(
         })
         .insert(LeftWall)
         .insert(Name::new("LeftWall"))
-        .insert(physical::AABBCollideBox {
-            height: 1080.0,
-            width: 20.0,
-            platform: true,
-            ..default()
-        })
-        .insert(physical::Velocity { x: 0.0, y: 0.0 });
+        .insert(RigidBody::Static)
+        .insert(CollisionShape::Cuboid {
+            half_extends: Vec3::new(10.0, 540.0, 0.0),
+            border_radius: Some(0.0),
+        });
 }
 
 pub fn spawn_right_wall(
@@ -148,13 +143,11 @@ pub fn spawn_right_wall(
         })
         .insert(RightWall)
         .insert(Name::new("RightWall"))
-        .insert(physical::AABBCollideBox {
-            height: 1080.0,
-            width: 20.0,
-            platform: true,
-            ..default()
-        })
-        .insert(physical::Velocity { x: 0.0, y: 0.0 });
+        .insert(RigidBody::Static)
+        .insert(CollisionShape::Cuboid {
+            half_extends: Vec3::new(10.0, 540.0, 0.0),
+            border_radius: Some(0.0),
+        });
 }
 
 pub struct WallPlugin;

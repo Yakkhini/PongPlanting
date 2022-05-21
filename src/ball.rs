@@ -11,8 +11,9 @@ See the Mulan PSL v2 for more details.
 */
 
 use bevy::prelude::*;
+use heron::prelude::*;
 
-use crate::{appstate, physical};
+use crate::appstate;
 
 #[derive(Component)]
 pub struct Ball;
@@ -33,14 +34,10 @@ pub fn spawn_ball(mut commands: Commands, assets_server: Res<AssetServer>) {
         })
         .insert(Ball)
         .insert(Name::new("Ball"))
-        .insert(physical::Velocity { x: 20.0, y: -20.0 })
-        .insert(physical::Touch { check: false })
-        .insert(physical::AABBCollideBox {
-            height: 30.0,
-            width: 30.0,
-            platform: false,
-            ..default()
-        });
+        .insert(RigidBody::Dynamic)
+        .insert(CollisionShape::Sphere { radius: 25.0 })
+        .insert(PhysicMaterial { restitution: 1.0, friction:0.0, density:1.0, ..Default::default() })
+        .insert(Velocity::from_linear(Vec3::X * 2.0));
 }
 
 pub struct BallPlugin;

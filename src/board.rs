@@ -11,8 +11,9 @@ See the Mulan PSL v2 for more details.
 */
 
 use bevy::{core::FixedTimestep, input, prelude::*};
+use heron::prelude::*;
 
-use crate::{appstate, physical};
+use crate::appstate;
 
 #[derive(Component)]
 pub struct Board;
@@ -33,32 +34,32 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
         })
         .insert(Board)
         .insert(Name::new("Board"))
-        .insert(physical::Velocity { x: 0.0, y: 0.0 })
-        .insert(physical::Touch { check: false })
-        .insert(physical::AABBCollideBox {
-            height: 70.0,
-            width: 160.0,
-            platform: false,
-            ..default()
-        });
+        .insert(RigidBody::Dynamic)
+        .insert(CollisionShape::Cuboid {
+            half_extends: Vec3::new(50.0, 15.0, 0.0),
+            border_radius: Some(0.0),
+        })
+        .insert(Velocity::from_linear(Vec3::X * 2.0))
+        .insert(PhysicMaterial { restitution: 0.8, friction:10.0, density:10.0, ..Default::default() })
+        .insert(RotationConstraints::lock());
 }
 
 pub fn board_movement(
-    mut query: Query<&mut physical::Velocity, With<Board>>,
+    mut query: Query<&mut Velocity, With<Board>>,
     keyboard_input: Res<Input<input::keyboard::KeyCode>>,
 ) {
     for mut velocity in query.iter_mut() {
         if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W) {
-            velocity.y = 10.;
+            velocity.linear.y = 160.;
         }
         if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S) {
-            velocity.y = -10.;
+            velocity.linear.y = -160.;
         }
         if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
-            velocity.x = -40.;
+            velocity.linear.x = -200.;
         }
         if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D) {
-            velocity.x = 40.;
+            velocity.linear.x = 200.;
         }
     }
 }
@@ -73,7 +74,7 @@ impl Plugin for BoardPlugin {
         app.add_system_set(
             SystemSet::on_update(appstate::AppState::InGame)
                 .with_run_criteria(FixedTimestep::step(0.08))
-                .with_system(board_movement.after("collision")),
+                .with_system(board_movement),
         );
     }
 }
