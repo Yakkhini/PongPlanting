@@ -56,11 +56,13 @@ pub fn board_movement(
             velocity.linear.y = -160.;
         }
         if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A) {
-            velocity.linear.x = -200.;
+            velocity.linear.x = -700.;
         }
         if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D) {
-            velocity.linear.x = 200.;
+            velocity.linear.x = 700.;
         }
+        velocity.linear.x = velocity.linear.x * 0.6;
+        velocity.linear.y = velocity.linear.y * 0.6;
     }
 }
 

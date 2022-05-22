@@ -22,6 +22,7 @@ mod background;
 mod ball;
 mod board;
 mod wall;
+mod map;
 
 pub const RESOLUTION: f32 = 16.0 / 9.0;
 
