@@ -40,7 +40,12 @@ pub fn spawn_board(mut commands: Commands, assets_server: Res<AssetServer>) {
             border_radius: Some(0.0),
         })
         .insert(Velocity::from_linear(Vec3::X * 2.0))
-        .insert(PhysicMaterial { restitution: 0.8, friction:10.0, density:10.0, ..Default::default() })
+        .insert(PhysicMaterial {
+            restitution: 0.8,
+            friction: 10.0,
+            density: 10.0,
+            ..Default::default()
+        })
         .insert(RotationConstraints::lock());
 }
 

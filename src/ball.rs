@@ -36,7 +36,12 @@ pub fn spawn_ball(mut commands: Commands, assets_server: Res<AssetServer>) {
         .insert(Name::new("Ball"))
         .insert(RigidBody::Dynamic)
         .insert(CollisionShape::Sphere { radius: 25.0 })
-        .insert(PhysicMaterial { restitution: 1.0, friction:0.0, density:1.0, ..Default::default() })
+        .insert(PhysicMaterial {
+            restitution: 1.0,
+            friction: 0.0,
+            density: 1.0,
+            ..Default::default()
+        })
         .insert(Velocity::from_linear(Vec3::X * 2.0));
 }
 
@@ -58,8 +63,7 @@ impl Plugin for BallPlugin {
                 .with_system(spawn_ball.after("spawn wall")),
         );
         app.add_system_set(
-            SystemSet::on_update(appstate::AppState::InGame)
-                .with_system(ball_movement),
+            SystemSet::on_update(appstate::AppState::InGame).with_system(ball_movement),
         );
     }
 }
