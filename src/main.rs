@@ -21,8 +21,8 @@ mod appstate;
 mod background;
 mod ball;
 mod board;
-mod wall;
 mod map;
+mod wall;
 
 pub const RESOLUTION: f32 = 16.0 / 9.0;
 
@@ -47,6 +47,7 @@ fn main() {
         .add_plugin(board::BoardPlugin)
         .add_plugin(ball::BallPlugin)
         .add_plugin(wall::WallPlugin)
+        .add_plugin(map::MapPlugin)
         .add_plugin(PhysicsPlugin::default())
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)

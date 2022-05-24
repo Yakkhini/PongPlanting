@@ -1,0 +1,24 @@
+[
+  (
+    entity: 4,
+    components: [
+      {
+        "type": "GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -9,
+          },
+          "y": {
+            "type": "i32",
+            "value": -9,
+          },
+        },
+      },
+      {
+        "type": "brick",
+        "struct": {},
+      },
+    ],
+  ),
+]
