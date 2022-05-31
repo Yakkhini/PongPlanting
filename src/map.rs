@@ -60,7 +60,7 @@ fn spawn_bricks(
             .insert(Name::new(name))
             .insert(RigidBody::Static)
             .insert(CollisionShape::Cuboid {
-                half_extends: Vec3::new(128.0, 72.0, 0.0),
+                half_extends: Vec3::new(64.0, 36.0, 0.0),
                 border_radius: Some(0.0),
             })
             .insert(Velocity::from_linear(Vec3::X * 2.0))
