@@ -42,7 +42,7 @@ pub fn spawn_ball(mut commands: Commands, assets_server: Res<AssetServer>) {
             density: 1.0,
             ..Default::default()
         })
-        .insert(Velocity::from_linear(Vec3::X * 2.0));
+        .insert(Velocity::from_linear(Vec3::Y * 2.0));
 }
 
 fn ball_movement(mut query: Query<&mut Velocity, With<Ball>>) {
