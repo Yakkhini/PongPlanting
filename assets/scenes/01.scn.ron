@@ -7,11 +7,11 @@
         "struct": {
           "x": {
             "type": "i32",
-            "value": -9,
+            "value": -3,
           },
           "y": {
             "type": "i32",
-            "value": -9,
+            "value": -3,
           },
         },
       },

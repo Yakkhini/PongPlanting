@@ -37,22 +37,24 @@ fn spawn_bricks(
     bricks: Query<(&Brick, &GridLocation, Entity), Without<Sprite>>,
 ) {
     for (_brick, grid_location, e) in bricks.iter() {
+        let name = "Brick".to_string() + &e.id().to_string();
         commands.entity(e).insert_bundle(SpriteBundle {
             sprite: Sprite {
-                custom_size: Some(Vec2::new(32.0, 18.0)),
+                custom_size: Some(Vec2::new(128.0, 72.0)),
                 ..default()
             },
             transform: Transform {
                 translation: Vec3::new(
-                    grid_location.x as f32 + 300.0,
-                    grid_location.y as f32 + 300.0,
+                    grid_location.x as f32 * 128.0,
+                    grid_location.y as f32 * 72.0,
                     2.0,
                 ),
                 ..default()
             },
             texture: assets_server.load("sprites/brick.png"),
             ..default()
-        });
+        })
+        .insert(Name::new(name));
     }
 }
 
