@@ -3,7 +3,7 @@
     entity: 4,
     components: [
       {
-        "type": "GridLocation",
+        "type": "map::GridLocation",
         "struct": {
           "x": {
             "type": "i32",
@@ -16,7 +16,7 @@
         },
       },
       {
-        "type": "brick",
+        "type": "map::brick",
         "struct": {},
       },
     ],

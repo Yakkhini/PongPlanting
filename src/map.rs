@@ -14,17 +14,19 @@ use bevy::prelude::*;
 
 use crate::appstate;
 
-#[derive(Component)]
+#[derive(Component, Reflect, Default)]
+#[reflect(Component)]
 struct GridLocation {
     x: i32,
     y: i32,
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect, Default)]
+#[reflect(Component)]
 struct Brick;
 
 fn create_map(assets_server: Res<AssetServer>, mut scene_spawner: ResMut<SceneSpawner>) {
-    let scene_handle: Handle<DynamicScene> = assets_server.load("maps/01.ron");
+    let scene_handle: Handle<DynamicScene> = assets_server.load("scenes/01.scn.ron");
 
     scene_spawner.spawn_dynamic(scene_handle);
 }
@@ -57,8 +59,9 @@ fn spawn_bricks(
 pub struct MapPlugin;
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
+        app.register_type::<GridLocation>();
+        app.register_type::<Brick>();
         app.add_system_set(SystemSet::on_enter(appstate::AppState::InGame).with_system(create_map));
-
         app.add_system_set(
             SystemSet::on_update(appstate::AppState::InGame).with_system(spawn_bricks),
         );

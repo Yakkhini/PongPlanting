@@ -1,0 +1,24 @@
+[
+  (
+    entity: 1,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -9,
+          },
+          "y": {
+            "type": "i32",
+            "value": -9,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::map::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+]
