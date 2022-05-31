@@ -11,6 +11,7 @@ See the Mulan PSL v2 for more details.
 */
 
 use bevy::prelude::*;
+use heron::prelude::*;
 
 use crate::appstate;
 
@@ -38,23 +39,38 @@ fn spawn_bricks(
 ) {
     for (_brick, grid_location, e) in bricks.iter() {
         let name = "Brick".to_string() + &e.id().to_string();
-        commands.entity(e).insert_bundle(SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Vec2::new(128.0, 72.0)),
+        commands
+            .entity(e)
+            .insert_bundle(SpriteBundle {
+                sprite: Sprite {
+                    custom_size: Some(Vec2::new(128.0, 72.0)),
+                    ..default()
+                },
+                transform: Transform {
+                    translation: Vec3::new(
+                        grid_location.x as f32 * 128.0,
+                        grid_location.y as f32 * 72.0,
+                        2.0,
+                    ),
+                    ..default()
+                },
+                texture: assets_server.load("sprites/brick.png"),
                 ..default()
-            },
-            transform: Transform {
-                translation: Vec3::new(
-                    grid_location.x as f32 * 128.0,
-                    grid_location.y as f32 * 72.0,
-                    2.0,
-                ),
-                ..default()
-            },
-            texture: assets_server.load("sprites/brick.png"),
-            ..default()
-        })
-        .insert(Name::new(name));
+            })
+            .insert(Name::new(name))
+            .insert(RigidBody::Static)
+            .insert(CollisionShape::Cuboid {
+                half_extends: Vec3::new(128.0, 72.0, 0.0),
+                border_radius: Some(0.0),
+            })
+            .insert(Velocity::from_linear(Vec3::X * 2.0))
+            .insert(PhysicMaterial {
+                restitution: 0.8,
+                friction: 10.0,
+                density: 10.0,
+                ..Default::default()
+            })
+            .insert(RotationConstraints::lock());
     }
 }
 
