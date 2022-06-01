@@ -12,16 +12,17 @@ See the Mulan PSL v2 for more details.
 
 use bevy::prelude::*;
 
-#[derive(Debug, Clone, Eq, PartialEq, Hash)]
-pub enum AppState {
-    Menu,
-    Level,
-    InGame,
+use crate::appstate;
+
+fn level_confirm(mut state: ResMut<State<appstate::AppState>>) {
+    state.set(appstate::AppState::InGame).unwrap();
 }
 
-pub struct StatesPlugin;
-impl Plugin for StatesPlugin {
+pub struct LevelPlugin;
+impl Plugin for LevelPlugin {
     fn build(&self, app: &mut App) {
-        app.add_state(AppState::Menu);
+        app.add_system_set(
+            SystemSet::on_update(appstate::AppState::Level).with_system(level_confirm),
+        );
     }
 }

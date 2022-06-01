@@ -69,7 +69,7 @@ fn menu(
         match *interaction {
             Interaction::Clicked => {
                 *color = PRESSED_BUTTON.into();
-                state.set(appstate::AppState::InGame).unwrap();
+                state.set(appstate::AppState::Level).unwrap();
             }
             Interaction::Hovered => {
                 *color = HOVERED_BUTTON.into();
