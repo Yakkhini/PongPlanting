@@ -22,6 +22,7 @@ mod background;
 mod ball;
 mod board;
 mod map;
+mod menu;
 mod wall;
 
 pub const RESOLUTION: f32 = 16.0 / 9.0;
@@ -43,6 +44,7 @@ fn main() {
         .add_plugin(WorldInspectorPlugin::new())
         //DEBUG PLUGIN
         .add_plugin(appstate::StatesPlugin)
+        .add_plugin(menu::MenuPlugin)
         .add_plugin(background::BackgroundPlugin {})
         .add_plugin(board::BoardPlugin)
         .add_plugin(ball::BallPlugin)
