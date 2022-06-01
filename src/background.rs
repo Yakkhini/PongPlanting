@@ -52,16 +52,18 @@ fn spawn_background(
     // Choose a random f32 for start_time, to have different background
     let mut rng = rand::thread_rng();
     let start_time = rand::Rng::gen_range(&mut rng, 0.0..100.0f32);
-    commands.spawn_bundle(MaterialMesh2dBundle {
-        mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
-        transform: Transform {
-            translation: Vec3::new(0.0, 0.0, 1.0),
-            scale: Vec3::new(1980.0, 1080.0, 1.0),
+    commands
+        .spawn_bundle(MaterialMesh2dBundle {
+            mesh: meshes.add(Mesh::from(shape::Quad::default())).into(),
+            transform: Transform {
+                translation: Vec3::new(0.0, 0.0, 1.0),
+                scale: Vec3::new(1980.0, 1080.0, 1.0),
+                ..Default::default()
+            },
+            material: materials.add(BackgroundMaterial { time: start_time }),
             ..Default::default()
-        },
-        material: materials.add(BackgroundMaterial { time: start_time }),
-        ..Default::default()
-    });
+        })
+        .insert(Name::new("Background Shader"));
 }
 
 // Currently the time is passed through our BackgroundMaterial

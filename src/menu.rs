@@ -24,7 +24,9 @@ const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
 fn setup_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
     // ui camera
-    commands.spawn_bundle(UiCameraBundle::default());
+    commands
+        .spawn_bundle(UiCameraBundle::default())
+        .insert(Name::new("UI Camera"));
     let button_entity = commands
         .spawn_bundle(ButtonBundle {
             style: Style {

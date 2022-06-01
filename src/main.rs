@@ -63,5 +63,7 @@ fn hello_world_system() {
 }
 
 fn set_camera(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands
+        .spawn_bundle(OrthographicCameraBundle::new_2d())
+        .insert(Name::new("Default Camera"));
 }
