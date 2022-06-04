@@ -44,8 +44,7 @@ fn main() {
             ..default()
         })
         .add_plugins(DefaultPlugins)
-        .add_plugin(WorldInspectorPlugin::new())
-        //DEBUG PLUGIN
+        .add_plugin(WorldInspectorPlugin::new()) // DEBUG PLUGIN
         .add_plugin(appstate::StatesPlugin)
         .add_plugin(menu::MenuPlugin)
         .add_plugin(background::BackgroundPlugin)
