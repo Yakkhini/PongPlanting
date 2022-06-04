@@ -22,6 +22,7 @@ mod background;
 mod ball;
 mod board;
 mod brick;
+mod collision;
 mod level;
 mod map;
 mod menu;
