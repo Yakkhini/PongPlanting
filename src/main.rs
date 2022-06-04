@@ -26,6 +26,7 @@ mod collision;
 mod level;
 mod map;
 mod menu;
+mod score;
 mod wall;
 
 pub const RESOLUTION: f32 = 16.0 / 9.0;
@@ -55,6 +56,7 @@ fn main() {
         .add_plugin(level::LevelPlugin)
         .add_plugin(map::MapPlugin)
         .add_plugin(PhysicsPlugin::default())
+        .add_plugin(score::ScorePlugin)
         .add_startup_system(hello_world_system)
         .add_startup_system(set_camera)
         .run();
@@ -68,4 +70,7 @@ fn set_camera(mut commands: Commands) {
     commands
         .spawn_bundle(OrthographicCameraBundle::new_2d())
         .insert(Name::new("Default Camera"));
+    commands
+        .spawn_bundle(UiCameraBundle::default())
+        .insert(Name::new("UI Camera"));
 }
