@@ -61,12 +61,30 @@ fn spawn_bricks(
     }
 }
 
+fn break_brick(
+    mut commands: Commands,
+    mut events: EventReader<CollisionEvent>,
+    query: Query<Entity, With<Brick>>,
+) {
+    for event in events.iter() {
+        if let CollisionEvent::Stopped(data1, data2) = event {
+            for e in query.iter() {
+                if e == data1.rigid_body_entity() || e == data2.rigid_body_entity() {
+                    commands.entity(e).despawn()
+                }
+            }
+        }
+    }
+}
+
 pub struct BrickPlugin;
 impl Plugin for BrickPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Brick>();
         app.add_system_set(
-            SystemSet::on_update(appstate::AppState::InGame).with_system(spawn_bricks),
+            SystemSet::on_update(appstate::AppState::InGame)
+                .with_system(spawn_bricks)
+                .with_system(break_brick),
         );
     }
 }
