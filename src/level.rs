@@ -80,7 +80,7 @@ fn level_button_system(
 
 fn level_clean_up(mut commands: Commands, mut query: Query<Entity, With<LevelButton>>) {
     for item in query.iter_mut() {
-        commands.entity(item).despawn()
+        commands.entity(item).despawn_recursive()
     }
 }
 
