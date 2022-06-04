@@ -28,7 +28,7 @@ See the Mulan PSL v2 for more details.
         },
       },
       {
-        "type": "pong_planting::map::Brick",
+        "type": "pong_planting::brick::Brick",
         "struct": {},
       },
     ],
