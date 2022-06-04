@@ -21,6 +21,7 @@ mod appstate;
 mod background;
 mod ball;
 mod board;
+mod brick;
 mod level;
 mod map;
 mod menu;
@@ -46,9 +47,10 @@ fn main() {
         //DEBUG PLUGIN
         .add_plugin(appstate::StatesPlugin)
         .add_plugin(menu::MenuPlugin)
-        .add_plugin(background::BackgroundPlugin {})
-        .add_plugin(board::BoardPlugin)
+        .add_plugin(background::BackgroundPlugin)
         .add_plugin(ball::BallPlugin)
+        .add_plugin(board::BoardPlugin)
+        .add_plugin(brick::BrickPlugin)
         .add_plugin(wall::WallPlugin)
         .add_plugin(level::LevelPlugin)
         .add_plugin(map::MapPlugin)
