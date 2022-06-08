@@ -17,6 +17,7 @@ pub enum AppState {
     Menu,
     Level,
     InGame,
+    Pause,
 }
 
 pub struct StatesPlugin;

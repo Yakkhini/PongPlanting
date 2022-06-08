@@ -26,6 +26,7 @@ mod collision;
 mod level;
 mod map;
 mod menu;
+mod pause;
 mod score;
 mod wall;
 
@@ -55,6 +56,7 @@ fn main() {
         .add_plugin(wall::WallPlugin)
         .add_plugin(level::LevelPlugin)
         .add_plugin(map::MapPlugin)
+        .add_plugin(pause::PausePlugin)
         .add_plugin(PhysicsPlugin::default())
         .add_plugin(score::ScorePlugin)
         .add_startup_system(hello_world_system)
