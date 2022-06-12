@@ -10,7 +10,7 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 */
 
-use bevy::prelude::*;
+use bevy::{app::AppExit, prelude::*};
 use heron::prelude::*;
 
 use crate::appstate;
@@ -70,26 +70,76 @@ fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
         })
         .insert(PauseButton)
         .insert(Name::new("Pause Button"));
+
+    commands
+        .spawn_bundle(ButtonBundle {
+            style: Style {
+                size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                // center button
+                margin: Rect::all(Val::Auto),
+                // horizontally center child text
+                justify_content: JustifyContent::Center,
+                // vertically center child text
+                align_items: AlignItems::Center,
+                ..default()
+            },
+            color: NORMAL_BUTTON.into(),
+            ..default()
+        })
+        .with_children(|parent| {
+            parent.spawn_bundle(TextBundle {
+                text: Text::with_section(
+                    "Exit",
+                    TextStyle {
+                        font: asset_server.load("fonts/mplus_hzk_12.ttf"),
+                        font_size: 40.0,
+                        color: Color::rgb(0.9, 0.9, 0.9),
+                    },
+                    Default::default(),
+                ),
+                ..default()
+            });
+        })
+        .insert(PauseButton)
+        .insert(Name::new("Exit Button"));
 }
 
 fn pause_button_system(
+    mut exit: EventWriter<AppExit>,
     mut state: ResMut<State<appstate::AppState>>,
     mut interaction_query: Query<
-        (&Interaction, &mut UiColor),
+        (&Interaction, &mut UiColor, &Name),
         (Changed<Interaction>, With<Button>),
     >,
 ) {
-    for (interaction, mut color) in interaction_query.iter_mut() {
-        match *interaction {
-            Interaction::Clicked => {
-                *color = PRESSED_BUTTON.into();
-                state.pop().unwrap();
+    for (interaction, mut color, name) in interaction_query.iter_mut() {
+        if name.as_str() == "Resume Button" {
+            match *interaction {
+                Interaction::Clicked => {
+                    *color = PRESSED_BUTTON.into();
+                    state.pop().unwrap();
+                }
+                Interaction::Hovered => {
+                    *color = HOVERED_BUTTON.into();
+                }
+                Interaction::None => {
+                    *color = NORMAL_BUTTON.into();
+                }
             }
-            Interaction::Hovered => {
-                *color = HOVERED_BUTTON.into();
-            }
-            Interaction::None => {
-                *color = NORMAL_BUTTON.into();
+        }
+
+        if name.as_str() == "Exit Button" {
+            match *interaction {
+                Interaction::Clicked => {
+                    *color = PRESSED_BUTTON.into();
+                    exit.send(AppExit);
+                }
+                Interaction::Hovered => {
+                    *color = HOVERED_BUTTON.into();
+                }
+                Interaction::None => {
+                    *color = NORMAL_BUTTON.into();
+                }
             }
         }
     }
@@ -100,9 +150,10 @@ fn pause_cleanup(
     mut physics_time: ResMut<PhysicsTime>,
     query: Query<Entity, With<PauseButton>>,
 ) {
-    let pause_button_entity = query.single();
-    commands.entity(pause_button_entity).despawn_recursive();
-    physics_time.resume();
+    for pause_button_entity in query.iter() {
+        commands.entity(pause_button_entity).despawn_recursive();
+        physics_time.resume();
+    }
 }
 
 pub struct PausePlugin;
