@@ -40,68 +40,87 @@ fn pause_setup(mut physics_time: ResMut<PhysicsTime>) {
 
 fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
-        .spawn_bundle(ButtonBundle {
+        .spawn_bundle(NodeBundle {
+            node: Node {
+                size: Vec2::new(150.0, 150.0),
+            },
             style: Style {
-                size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-                // center button
-                margin: Rect::all(Val::Auto),
-                // horizontally center child text
-                justify_content: JustifyContent::Center,
-                // vertically center child text
+                flex_direction: FlexDirection::Column,
+                flex_wrap: FlexWrap::NoWrap,
                 align_items: AlignItems::Center,
+                align_self: AlignSelf::Center,
+                justify_content: JustifyContent::SpaceBetween,
+                margin: Rect::all(Val::Auto),
+                size: Size {
+                    width: Val::Auto,
+                    height: Val::Px(250.0),
+                },
                 ..default()
             },
-            color: NORMAL_BUTTON.into(),
+            color: UiColor(Color::NONE),
             ..default()
         })
         .with_children(|parent| {
-            parent.spawn_bundle(TextBundle {
-                text: Text::with_section(
-                    "Resume",
-                    TextStyle {
-                        font: asset_server.load("fonts/mplus_hzk_12.ttf"),
-                        font_size: 40.0,
-                        color: Color::rgb(0.9, 0.9, 0.9),
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
                     },
-                    Default::default(),
-                ),
-                ..default()
-            });
-        })
-        .insert(PauseButton)
-        .insert(Name::new("Pause Button"));
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle {
+                        text: Text::with_section(
+                            "Resume",
+                            TextStyle {
+                                font: asset_server.load("fonts/mplus_hzk_12.ttf"),
+                                font_size: 40.0,
+                                color: Color::rgb(0.9, 0.9, 0.9),
+                            },
+                            Default::default(),
+                        ),
+                        ..default()
+                    });
+                })
+                .insert(Name::new("Resume Button"));
 
-    commands
-        .spawn_bundle(ButtonBundle {
-            style: Style {
-                size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-                // center button
-                margin: Rect::all(Val::Auto),
-                // horizontally center child text
-                justify_content: JustifyContent::Center,
-                // vertically center child text
-                align_items: AlignItems::Center,
-                ..default()
-            },
-            color: NORMAL_BUTTON.into(),
-            ..default()
-        })
-        .with_children(|parent| {
-            parent.spawn_bundle(TextBundle {
-                text: Text::with_section(
-                    "Exit",
-                    TextStyle {
-                        font: asset_server.load("fonts/mplus_hzk_12.ttf"),
-                        font_size: 40.0,
-                        color: Color::rgb(0.9, 0.9, 0.9),
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
                     },
-                    Default::default(),
-                ),
-                ..default()
-            });
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle {
+                        text: Text::with_section(
+                            "Exit",
+                            TextStyle {
+                                font: asset_server.load("fonts/mplus_hzk_12.ttf"),
+                                font_size: 40.0,
+                                color: Color::rgb(0.9, 0.9, 0.9),
+                            },
+                            Default::default(),
+                        ),
+                        ..default()
+                    });
+                })
+                .insert(Name::new("Exit Button"));
         })
         .insert(PauseButton)
-        .insert(Name::new("Exit Button"));
+        .insert(Name::new("Pause UI"));
 }
 
 fn pause_button_system(
