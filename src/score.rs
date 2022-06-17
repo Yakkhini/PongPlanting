@@ -17,6 +17,16 @@ use crate::appstate;
 #[derive(Component)]
 struct ScoreText;
 
+struct Score {
+    score: i32,
+}
+
+impl Default for Score {
+    fn default() -> Score {
+        Score { score: 0 }
+    }
+}
+
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
         .spawn_bundle(TextBundle {
@@ -48,9 +58,18 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         .insert(Name::new("Score Text"));
 }
 
+fn score_update(score: Res<Score>, mut query: Query<&mut Text, With<ScoreText>>) {
+    let score_number = score.score.to_string();
+    query.single_mut().sections[0].value = "Score: ".to_string() + &score_number;
+}
+
 pub struct ScorePlugin;
 impl Plugin for ScorePlugin {
     fn build(&self, app: &mut App) {
+        app.init_resource::<Score>();
         app.add_system_set(SystemSet::on_enter(appstate::AppState::InGame).with_system(setup));
+        app.add_system_set(
+            SystemSet::on_update(appstate::AppState::InGame).with_system(score_update),
+        );
     }
 }
