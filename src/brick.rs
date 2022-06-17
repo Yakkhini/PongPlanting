@@ -13,11 +13,11 @@ See the Mulan PSL v2 for more details.
 use bevy::prelude::*;
 use heron::prelude::*;
 
-use crate::{appstate, board, map};
+use crate::{appstate, collision, map};
 
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
-struct Brick;
+pub struct Brick;
 
 fn spawn_bricks(
     assets_server: Res<AssetServer>,
@@ -63,21 +63,10 @@ fn spawn_bricks(
 
 fn break_brick(
     mut commands: Commands,
-    mut events: EventReader<CollisionEvent>,
-    query_brick: Query<Entity, With<Brick>>,
-    query_board: Query<Entity, With<board::Board>>,
+    mut events: EventReader<collision::BallBrickCollisionEvent>,
 ) {
-    let board_entity = query_board.single();
     for event in events.iter() {
-        if let CollisionEvent::Stopped(data1, data2) = event {
-            for e in query_brick.iter() {
-                if (e == data1.rigid_body_entity() && data2.rigid_body_entity() != board_entity)
-                    || (e == data2.rigid_body_entity() && data1.rigid_body_entity() != board_entity)
-                {
-                    commands.entity(e).despawn()
-                }
-            }
-        }
+        commands.entity(event.brick).despawn();
     }
 }
 

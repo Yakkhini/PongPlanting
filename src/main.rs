@@ -53,6 +53,7 @@ fn main() {
         .add_plugin(ball::BallPlugin)
         .add_plugin(board::BoardPlugin)
         .add_plugin(brick::BrickPlugin)
+        .add_plugin(collision::CollisionPlugin)
         .add_plugin(wall::WallPlugin)
         .add_plugin(level::LevelPlugin)
         .add_plugin(map::MapPlugin)
