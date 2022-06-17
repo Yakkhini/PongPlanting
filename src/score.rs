@@ -63,6 +63,10 @@ fn score_update(score: Res<Score>, mut query: Query<&mut Text, With<ScoreText>>)
     query.single_mut().sections[0].value = "Score: ".to_string() + &score_number;
 }
 
+fn score_count() {
+    
+}
+
 pub struct ScorePlugin;
 impl Plugin for ScorePlugin {
     fn build(&self, app: &mut App) {
