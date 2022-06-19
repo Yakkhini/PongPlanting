@@ -17,6 +17,10 @@ use crate::appstate;
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
+const LEVEL_MAX: i32 = 20;
+
+#[derive(Component)]
+struct LevelNode;
 
 #[derive(Component)]
 struct LevelButton {
@@ -29,36 +33,94 @@ pub struct LevelInfo {
 
 fn setup_level_button(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
-        .spawn_bundle(ButtonBundle {
+        .spawn_bundle(NodeBundle {
             style: Style {
-                size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-                // center button
+                flex_direction: FlexDirection::ColumnReverse,
+                flex_wrap: FlexWrap::Wrap,
+                align_items: AlignItems::FlexStart,
+                align_self: AlignSelf::Center,
+                justify_content: JustifyContent::SpaceBetween,
                 margin: Rect::all(Val::Auto),
-                // horizontally center child text
-                justify_content: JustifyContent::Center,
-                // vertically center child text
-                align_items: AlignItems::Center,
+                size: Size {
+                    width: Val::Auto,
+                    height: Val::Px(1000.0),
+                },
                 ..default()
             },
-            color: NORMAL_BUTTON.into(),
+            color: UiColor(Color::NONE),
             ..default()
         })
         .with_children(|parent| {
-            parent.spawn_bundle(TextBundle {
-                text: Text::with_section(
-                    "level 1",
-                    TextStyle {
-                        font: asset_server.load("fonts/mplus_hzk_12.ttf"),
-                        font_size: 40.0,
-                        color: Color::rgb(0.9, 0.9, 0.9),
-                    },
-                    Default::default(),
-                ),
-                ..default()
-            });
+            let mut count = 1;
+            loop {
+                let mut count_inner = 1;
+                parent
+                    .spawn_bundle(NodeBundle {
+                        style: Style {
+                            flex_direction: FlexDirection::Row,
+                            flex_wrap: FlexWrap::Wrap,
+                            align_items: AlignItems::FlexStart,
+                            align_self: AlignSelf::Center,
+                            justify_content: JustifyContent::SpaceBetween,
+                            margin: Rect::all(Val::Auto),
+                            size: Size {
+                                width: Val::Px(1600.0),
+                                height: Val::Auto,
+                            },
+                            ..default()
+                        },
+                        color: UiColor(Color::NONE),
+                        ..default()
+                    })
+                    .with_children(|inner_parent| {
+                        loop {
+                            inner_parent
+                                .spawn_bundle(ButtonBundle {
+                                    style: Style {
+                                        size: Size::new(Val::Px(180.0), Val::Px(65.0)),
+                                        // center button
+                                        margin: Rect::all(Val::Auto),
+                                        // horizontally center child text
+                                        justify_content: JustifyContent::Center,
+                                        // vertically center child text
+                                        align_items: AlignItems::Center,
+                                        ..default()
+                                    },
+                                    color: NORMAL_BUTTON.into(),
+                                    ..default()
+                                })
+                                .with_children(|parent| {
+                                    parent.spawn_bundle(TextBundle {
+                                        text: Text::with_section(
+                                            "level ".to_string() + &count.to_string(),
+                                            TextStyle {
+                                                font: asset_server.load("fonts/mplus_hzk_12.ttf"),
+                                                font_size: 40.0,
+                                                color: Color::rgb(0.9, 0.9, 0.9),
+                                            },
+                                            Default::default(),
+                                        ),
+                                        ..default()
+                                    });
+                                })
+                                .insert(LevelButton {
+                                    level_number: count,
+                                })
+                                .insert(Name::new("Level Button".to_string() + &count.to_string()));
+                            count += 1;
+                            if count_inner == 5 {
+                                break;
+                            }
+                            count_inner += 1;
+                        }
+                    });
+                if count >= LEVEL_MAX {
+                    break;
+                }
+                println!("{}", count);
+            }
         })
-        .insert(LevelButton { level_number: 1 })
-        .insert(Name::new("Level Button"));
+        .insert(LevelNode);
 }
 
 fn level_button_system(
@@ -73,8 +135,8 @@ fn level_button_system(
         match *interaction {
             Interaction::Clicked => {
                 *color = PRESSED_BUTTON.into();
-                state.set(appstate::AppState::InGame).unwrap();
                 level_info.level_number = level_button.level_number;
+                state.set(appstate::AppState::InGame).unwrap();
             }
             Interaction::Hovered => {
                 *color = HOVERED_BUTTON.into();
@@ -86,7 +148,7 @@ fn level_button_system(
     }
 }
 
-fn level_clean_up(mut commands: Commands, mut query: Query<Entity, With<LevelButton>>) {
+fn level_clean_up(mut commands: Commands, mut query: Query<Entity, With<LevelNode>>) {
     for item in query.iter_mut() {
         commands.entity(item).despawn_recursive()
     }
