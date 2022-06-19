@@ -147,6 +147,12 @@ fn level_button_system(
     }
 }
 
+fn back_to_menu(keyboard_input: Res<Input<KeyCode>>, mut state: ResMut<State<appstate::AppState>>) {
+    if keyboard_input.just_released(KeyCode::Escape) {
+        state.set(appstate::AppState::Menu).unwrap();
+    }
+}
+
 fn level_clean_up(mut commands: Commands, mut query: Query<Entity, With<LevelNode>>) {
     for item in query.iter_mut() {
         commands.entity(item).despawn_recursive()
@@ -161,7 +167,9 @@ impl Plugin for LevelPlugin {
             SystemSet::on_enter(appstate::AppState::Level).with_system(setup_level_button),
         );
         app.add_system_set(
-            SystemSet::on_update(appstate::AppState::Level).with_system(level_button_system),
+            SystemSet::on_update(appstate::AppState::Level)
+                .with_system(level_button_system)
+                .with_system(back_to_menu),
         );
         app.add_system_set(
             SystemSet::on_exit(appstate::AppState::Level).with_system(level_clean_up),

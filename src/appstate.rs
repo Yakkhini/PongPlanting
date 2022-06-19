@@ -12,7 +12,7 @@ See the Mulan PSL v2 for more details.
 
 use bevy::prelude::*;
 
-use crate::{board, ball, brick, score};
+use crate::{ball, board, brick, score};
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum AppState {
@@ -27,7 +27,7 @@ fn game_clean_up(
     query_ball: Query<Entity, With<ball::Ball>>,
     query_board: Query<Entity, With<board::Board>>,
     query_brick: Query<Entity, With<brick::Brick>>,
-    query_ui: Query<Entity,With<score::ScoreText>>,
+    query_ui: Query<Entity, With<score::ScoreText>>,
 ) {
     let ball_entity = query_ball.single();
     let board_entity = query_board.single();
@@ -39,7 +39,6 @@ fn game_clean_up(
     for e in query_brick.iter() {
         commands.entity(e).despawn_recursive();
     }
-
 }
 
 pub struct StatesPlugin;
