@@ -35,8 +35,8 @@ fn spawn_bricks(
                 },
                 transform: Transform {
                     translation: Vec3::new(
-                        grid_location.x as f32 * 128.0,
-                        grid_location.y as f32 * 72.0,
+                        grid_location.x as f32 * 135.0,
+                        grid_location.y as f32 * 80.0,
                         2.0,
                     ),
                     ..default()

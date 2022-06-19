@@ -71,6 +71,7 @@ fn score_count(
 ) {
     for _event in ball_brick_events.iter() {
         score.score = score.score + score.step;
+        score.step += 1;
     }
 
     for _event in ball_board_events.iter() {
