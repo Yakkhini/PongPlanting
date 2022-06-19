@@ -10,77 +10,147 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 */
 
-use bevy::prelude::*;
+use bevy::{app::AppExit, prelude::*};
 
 use crate::appstate;
 
-struct MenuData {
-    button_entity: Entity,
-}
+#[derive(Component)]
+struct MenuButton;
 
 const NORMAL_BUTTON: Color = Color::rgb(0.15, 0.15, 0.15);
 const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
 fn setup_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let button_entity = commands
-        .spawn_bundle(ButtonBundle {
+    commands
+        .spawn_bundle(NodeBundle {
+            node: Node {
+                size: Vec2::new(150.0, 150.0),
+            },
             style: Style {
-                size: Size::new(Val::Px(150.0), Val::Px(65.0)),
-                // center button
-                margin: Rect::all(Val::Auto),
-                // horizontally center child text
-                justify_content: JustifyContent::Center,
-                // vertically center child text
+                flex_direction: FlexDirection::ColumnReverse,
+                flex_wrap: FlexWrap::NoWrap,
                 align_items: AlignItems::Center,
+                align_self: AlignSelf::Center,
+                justify_content: JustifyContent::SpaceBetween,
+                margin: Rect::all(Val::Auto),
+                size: Size {
+                    width: Val::Auto,
+                    height: Val::Px(250.0),
+                },
                 ..default()
             },
-            color: NORMAL_BUTTON.into(),
+            color: UiColor(Color::NONE),
             ..default()
         })
         .with_children(|parent| {
-            parent.spawn_bundle(TextBundle {
-                text: Text::with_section(
-                    "Play",
-                    TextStyle {
-                        font: asset_server.load("fonts/mplus_hzk_12.ttf"),
-                        font_size: 40.0,
-                        color: Color::rgb(0.9, 0.9, 0.9),
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
                     },
-                    Default::default(),
-                ),
-                ..default()
-            });
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle {
+                        text: Text::with_section(
+                            "Play",
+                            TextStyle {
+                                font: asset_server.load("fonts/mplus_hzk_12.ttf"),
+                                font_size: 40.0,
+                                color: Color::rgb(0.9, 0.9, 0.9),
+                            },
+                            Default::default(),
+                        ),
+                        ..default()
+                    });
+                })
+                .insert(Name::new("Play Button"));
+
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle {
+                        text: Text::with_section(
+                            "Exit",
+                            TextStyle {
+                                font: asset_server.load("fonts/mplus_hzk_12.ttf"),
+                                font_size: 40.0,
+                                color: Color::rgb(0.9, 0.9, 0.9),
+                            },
+                            Default::default(),
+                        ),
+                        ..default()
+                    });
+                })
+                .insert(Name::new("Exit Button"));
         })
-        .id();
-    commands.insert_resource(MenuData { button_entity });
+        .insert(MenuButton)
+        .insert(Name::new("Menu UI"));
 }
 
 fn menu(
+    mut exit: EventWriter<AppExit>,
     mut state: ResMut<State<appstate::AppState>>,
     mut interaction_query: Query<
-        (&Interaction, &mut UiColor),
+        (&Interaction, &mut UiColor, &Name),
         (Changed<Interaction>, With<Button>),
     >,
 ) {
-    for (interaction, mut color) in interaction_query.iter_mut() {
-        match *interaction {
-            Interaction::Clicked => {
-                *color = PRESSED_BUTTON.into();
-                state.set(appstate::AppState::Level).unwrap();
+    for (interaction, mut color, name) in interaction_query.iter_mut() {
+        if name.as_str() == "Play Button" {
+            match *interaction {
+                Interaction::Clicked => {
+                    *color = PRESSED_BUTTON.into();
+                    state.set(appstate::AppState::Level).unwrap();
+                }
+                Interaction::Hovered => {
+                    *color = HOVERED_BUTTON.into();
+                }
+                Interaction::None => {
+                    *color = NORMAL_BUTTON.into();
+                }
             }
-            Interaction::Hovered => {
-                *color = HOVERED_BUTTON.into();
-            }
-            Interaction::None => {
-                *color = NORMAL_BUTTON.into();
+        }
+
+        if name.as_str() == "Exit Button" {
+            match *interaction {
+                Interaction::Clicked => {
+                    *color = PRESSED_BUTTON.into();
+                    exit.send(AppExit);
+                }
+                Interaction::Hovered => {
+                    *color = HOVERED_BUTTON.into();
+                }
+                Interaction::None => {
+                    *color = NORMAL_BUTTON.into();
+                }
             }
         }
     }
 }
 
-fn cleanup_menu(mut commands: Commands, menu_data: Res<MenuData>) {
-    commands.entity(menu_data.button_entity).despawn_recursive();
+fn cleanup_menu(mut commands: Commands, query: Query<Entity, With<MenuButton>>) {
+    for e in query.iter() {
+        commands.entity(e).despawn_recursive();
+    }
 }
 
 pub struct MenuPlugin;

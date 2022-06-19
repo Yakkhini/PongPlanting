@@ -50,7 +50,7 @@ fn game_clean_up(
 
 fn game_back_to_menu_event_handler(
     mut events: EventReader<GameBackToMenuEvent>,
-    mut state: ResMut<State<AppState>>
+    mut state: ResMut<State<AppState>>,
 ) {
     for _event in events.iter() {
         state.set(AppState::Menu).unwrap();
@@ -62,7 +62,9 @@ impl Plugin for StatesPlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<GameBackToMenuEvent>();
         app.add_state(AppState::Menu);
-        app.add_system_set(SystemSet::on_update(AppState::InGame).with_system(game_back_to_menu_event_handler));
+        app.add_system_set(
+            SystemSet::on_update(AppState::InGame).with_system(game_back_to_menu_event_handler),
+        );
         app.add_system_set(SystemSet::on_exit(AppState::InGame).with_system(game_clean_up));
     }
 }

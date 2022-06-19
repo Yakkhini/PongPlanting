@@ -89,7 +89,7 @@ fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
                     });
                 })
                 .insert(Name::new("Resume Button"));
-            
+
             parent
                 .spawn_bundle(ButtonBundle {
                     style: Style {
@@ -116,9 +116,9 @@ fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ),
                         ..default()
                     });
-                    })
+                })
                 .insert(Name::new("Menu Button"));
-            
+
             parent
                 .spawn_bundle(ButtonBundle {
                     style: Style {
@@ -153,7 +153,7 @@ fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn pause_button_system(
-    mut back_to_menu_event : EventWriter<appstate::GameBackToMenuEvent>,
+    mut back_to_menu_event: EventWriter<appstate::GameBackToMenuEvent>,
     mut exit: EventWriter<AppExit>,
     mut state: ResMut<State<appstate::AppState>>,
     mut interaction_query: Query<
