@@ -16,19 +16,7 @@ use heron::prelude::*;
 use crate::appstate;
 
 #[derive(Component)]
-pub struct BackGroundWall;
-
-#[derive(Component)]
-pub struct TopWall;
-
-#[derive(Component)]
-pub struct BottomWall;
-
-#[derive(Component)]
-pub struct LeftWall;
-
-#[derive(Component)]
-pub struct RightWall;
+pub struct Wall;
 
 pub fn spawn_top_wall(
     mut commands: Commands,
@@ -51,7 +39,7 @@ pub fn spawn_top_wall(
             //texture: assets_sever.load("sprites/bg.png"),
             ..default()
         })
-        .insert(TopWall)
+        .insert(Wall)
         .insert(Name::new("TopWall"))
         .insert(RigidBody::Static)
         .insert(CollisionShape::Cuboid {
@@ -81,7 +69,7 @@ pub fn spawn_bottom_wall(
             //texture: assets_sever.load("sprites/bg.png"),
             ..default()
         })
-        .insert(BottomWall)
+        .insert(Wall)
         .insert(Name::new("BottomWall"))
         .insert(RigidBody::Static)
         .insert(CollisionShape::Cuboid {
@@ -111,7 +99,7 @@ pub fn spawn_left_wall(
             //texture: assets_sever.load("sprites/bg.png"),
             ..default()
         })
-        .insert(LeftWall)
+        .insert(Wall)
         .insert(Name::new("LeftWall"))
         .insert(RigidBody::Static)
         .insert(CollisionShape::Cuboid {
@@ -141,7 +129,7 @@ pub fn spawn_right_wall(
             //texture: assets_sever.load("sprites/bg.png"),
             ..default()
         })
-        .insert(RightWall)
+        .insert(Wall)
         .insert(Name::new("RightWall"))
         .insert(RigidBody::Static)
         .insert(CollisionShape::Cuboid {

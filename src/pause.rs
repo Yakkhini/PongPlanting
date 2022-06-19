@@ -45,7 +45,7 @@ fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
                 size: Vec2::new(150.0, 150.0),
             },
             style: Style {
-                flex_direction: FlexDirection::Column,
+                flex_direction: FlexDirection::ColumnReverse,
                 flex_wrap: FlexWrap::NoWrap,
                 align_items: AlignItems::Center,
                 align_self: AlignSelf::Center,
@@ -89,7 +89,36 @@ fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
                     });
                 })
                 .insert(Name::new("Resume Button"));
-
+            
+            parent
+                .spawn_bundle(ButtonBundle {
+                    style: Style {
+                        size: Size::new(Val::Px(150.0), Val::Px(65.0)),
+                        // horizontally center child text
+                        justify_content: JustifyContent::Center,
+                        // vertically center child text
+                        align_items: AlignItems::Center,
+                        ..default()
+                    },
+                    color: NORMAL_BUTTON.into(),
+                    ..default()
+                })
+                .with_children(|parent| {
+                    parent.spawn_bundle(TextBundle {
+                        text: Text::with_section(
+                            "Menu",
+                            TextStyle {
+                                font: asset_server.load("fonts/mplus_hzk_12.ttf"),
+                                font_size: 40.0,
+                                color: Color::rgb(0.9, 0.9, 0.9),
+                            },
+                            Default::default(),
+                        ),
+                        ..default()
+                    });
+                    })
+                .insert(Name::new("Menu Button"));
+            
             parent
                 .spawn_bundle(ButtonBundle {
                     style: Style {
@@ -124,6 +153,7 @@ fn setup_pause_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn pause_button_system(
+    mut back_to_menu_event : EventWriter<appstate::GameBackToMenuEvent>,
     mut exit: EventWriter<AppExit>,
     mut state: ResMut<State<appstate::AppState>>,
     mut interaction_query: Query<
@@ -136,6 +166,22 @@ fn pause_button_system(
             match *interaction {
                 Interaction::Clicked => {
                     *color = PRESSED_BUTTON.into();
+                    state.pop().unwrap();
+                }
+                Interaction::Hovered => {
+                    *color = HOVERED_BUTTON.into();
+                }
+                Interaction::None => {
+                    *color = NORMAL_BUTTON.into();
+                }
+            }
+        }
+
+        if name.as_str() == "Menu Button" {
+            match *interaction {
+                Interaction::Clicked => {
+                    *color = PRESSED_BUTTON.into();
+                    back_to_menu_event.send(appstate::GameBackToMenuEvent);
                     state.pop().unwrap();
                 }
                 Interaction::Hovered => {
