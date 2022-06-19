@@ -27,7 +27,7 @@ fn create_map(
     level_info: Res<level::LevelInfo>,
 ) {
     let level_number = level_info.level_number;
-    let path = "scenes/0".to_string() + &level_number.to_string() + &".scn.ron".to_string();
+    let path = "scenes/".to_string() + &level_number.to_string() + &".scn.ron".to_string();
     let scene_handle: Handle<DynamicScene> = assets_server.load(&path);
 
     scene_spawner.spawn_dynamic(scene_handle);

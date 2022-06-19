@@ -117,7 +117,6 @@ fn setup_level_button(mut commands: Commands, asset_server: Res<AssetServer>) {
                 if count >= LEVEL_MAX {
                     break;
                 }
-                println!("{}", count);
             }
         })
         .insert(LevelNode);
