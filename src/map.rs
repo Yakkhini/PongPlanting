@@ -12,7 +12,7 @@ See the Mulan PSL v2 for more details.
 
 use bevy::prelude::*;
 
-use crate::appstate;
+use crate::{appstate, level};
 
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
@@ -21,8 +21,14 @@ pub struct GridLocation {
     pub y: i32,
 }
 
-fn create_map(assets_server: Res<AssetServer>, mut scene_spawner: ResMut<SceneSpawner>) {
-    let scene_handle: Handle<DynamicScene> = assets_server.load("scenes/01.scn.ron");
+fn create_map(
+    assets_server: Res<AssetServer>,
+    mut scene_spawner: ResMut<SceneSpawner>,
+    level_info: Res<level::LevelInfo>,
+) {
+    let level_number = level_info.level_number;
+    let path = "scenes/0".to_string() + &level_number.to_string() + &".scn.ron".to_string();
+    let scene_handle: Handle<DynamicScene> = assets_server.load(&path);
 
     scene_spawner.spawn_dynamic(scene_handle);
 }

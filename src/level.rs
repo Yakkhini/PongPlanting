@@ -23,8 +23,8 @@ struct LevelButton {
     level_number: i32,
 }
 
-struct LevelInfo {
-    level_number: i32,
+pub struct LevelInfo {
+    pub level_number: i32,
 }
 
 fn setup_level_button(mut commands: Commands, asset_server: Res<AssetServer>) {
