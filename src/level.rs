@@ -19,7 +19,13 @@ const HOVERED_BUTTON: Color = Color::rgb(0.25, 0.25, 0.25);
 const PRESSED_BUTTON: Color = Color::rgb(0.35, 0.75, 0.35);
 
 #[derive(Component)]
-struct LevelButton;
+struct LevelButton {
+    level_number: i32,
+}
+
+struct LevelInfo {
+    level_number: i32,
+}
 
 fn setup_level_button(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
@@ -51,22 +57,24 @@ fn setup_level_button(mut commands: Commands, asset_server: Res<AssetServer>) {
                 ..default()
             });
         })
-        .insert(LevelButton)
+        .insert(LevelButton { level_number: 1 })
         .insert(Name::new("Level Button"));
 }
 
 fn level_button_system(
     mut state: ResMut<State<appstate::AppState>>,
     mut interaction_query: Query<
-        (&Interaction, &mut UiColor),
+        (&Interaction, &mut UiColor, &LevelButton),
         (Changed<Interaction>, With<Button>),
     >,
+    mut level_info: ResMut<LevelInfo>,
 ) {
-    for (interaction, mut color) in interaction_query.iter_mut() {
+    for (interaction, mut color, level_button) in interaction_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {
                 *color = PRESSED_BUTTON.into();
                 state.set(appstate::AppState::InGame).unwrap();
+                level_info.level_number = level_button.level_number;
             }
             Interaction::Hovered => {
                 *color = HOVERED_BUTTON.into();
@@ -87,6 +95,7 @@ fn level_clean_up(mut commands: Commands, mut query: Query<Entity, With<LevelBut
 pub struct LevelPlugin;
 impl Plugin for LevelPlugin {
     fn build(&self, app: &mut App) {
+        app.insert_resource(LevelInfo { level_number: 0 });
         app.add_system_set(
             SystemSet::on_enter(appstate::AppState::Level).with_system(setup_level_button),
         );
