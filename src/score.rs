@@ -15,7 +15,7 @@ use bevy::prelude::*;
 use crate::{appstate, collision};
 
 #[derive(Component)]
-struct ScoreText;
+pub struct ScoreText;
 
 struct Score {
     score: i32,
