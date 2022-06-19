@@ -35,7 +35,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 position_type: PositionType::Absolute,
                 align_self: AlignSelf::FlexStart,
                 position: Rect {
-                    left: Val::Px(1600.0),
+                    left: Val::Px(1500.0),
                     top: Val::Px(60.0),
                     ..default()
                 },
