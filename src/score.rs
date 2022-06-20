@@ -17,9 +17,9 @@ use crate::{appstate, collision};
 #[derive(Component)]
 pub struct ScoreText;
 
-struct Score {
-    score: i32,
-    step: i32,
+pub struct Score {
+    pub score: i32,
+    pub step: i32,
 }
 
 impl Default for Score {

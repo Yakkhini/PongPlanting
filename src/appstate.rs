@@ -31,6 +31,7 @@ fn game_clean_up(
     query_brick: Query<Entity, With<brick::Brick>>,
     query_ui: Query<Entity, With<score::ScoreText>>,
     query_wall: Query<Entity, With<wall::Wall>>,
+    mut score: ResMut<score::Score>,
 ) {
     let ball_entity = query_ball.single();
     let board_entity = query_board.single();
@@ -46,6 +47,9 @@ fn game_clean_up(
     for e in query_wall.iter() {
         commands.entity(e).despawn_recursive();
     }
+
+    score.score = 0;
+    score.step = 1;
 }
 
 fn game_back_to_menu_event_handler(
