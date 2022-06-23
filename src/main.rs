@@ -10,6 +10,8 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 */
 
+use std::env;
+
 use bevy::{
     prelude::*,
     window::{PresentMode, WindowMode},
@@ -33,6 +35,8 @@ mod wall;
 pub const RESOLUTION: f32 = 16.0 / 9.0;
 
 fn main() {
+    env::set_var("CARGO_MANIFEST_DIR", "/usr/share/pong-planting");
+
     App::new()
         .insert_resource(WindowDescriptor {
             title: "Planting Pong".to_string(),

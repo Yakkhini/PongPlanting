@@ -35,6 +35,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 2,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -5,
+          },
+          "y": {
+            "type": "i32",
+            "value": 6,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 3,
     components: [
       {
@@ -66,6 +89,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": -3,
+          },
+          "y": {
+            "type": "i32",
+            "value": 6,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 5,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -2,
           },
           "y": {
             "type": "i32",
@@ -150,6 +196,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 9,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 2,
+          },
+          "y": {
+            "type": "i32",
+            "value": 6,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 10,
     components: [
       {
@@ -181,6 +250,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": 4,
+          },
+          "y": {
+            "type": "i32",
+            "value": 6,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 12,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 5,
           },
           "y": {
             "type": "i32",
@@ -242,6 +334,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 15,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -5,
+          },
+          "y": {
+            "type": "i32",
+            "value": 5,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 16,
     components: [
       {
@@ -273,6 +388,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": -3,
+          },
+          "y": {
+            "type": "i32",
+            "value": 5,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 18,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -2,
           },
           "y": {
             "type": "i32",
@@ -357,6 +495,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 22,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 2,
+          },
+          "y": {
+            "type": "i32",
+            "value": 5,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 23,
     components: [
       {
@@ -388,6 +549,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": 4,
+          },
+          "y": {
+            "type": "i32",
+            "value": 5,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 25,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 5,
           },
           "y": {
             "type": "i32",
@@ -449,6 +633,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 28,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -5,
+          },
+          "y": {
+            "type": "i32",
+            "value": 4,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 29,
     components: [
       {
@@ -480,6 +687,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": -3,
+          },
+          "y": {
+            "type": "i32",
+            "value": 4,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 31,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -2,
           },
           "y": {
             "type": "i32",
@@ -564,6 +794,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 35,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 2,
+          },
+          "y": {
+            "type": "i32",
+            "value": 4,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 36,
     components: [
       {
@@ -595,6 +848,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": 4,
+          },
+          "y": {
+            "type": "i32",
+            "value": 4,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 38,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 5,
           },
           "y": {
             "type": "i32",
@@ -656,6 +932,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 41,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -5,
+          },
+          "y": {
+            "type": "i32",
+            "value": 3,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 42,
     components: [
       {
@@ -687,6 +986,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": -3,
+          },
+          "y": {
+            "type": "i32",
+            "value": 3,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 44,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -2,
           },
           "y": {
             "type": "i32",
@@ -771,6 +1093,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 48,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 2,
+          },
+          "y": {
+            "type": "i32",
+            "value": 3,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 49,
     components: [
       {
@@ -802,6 +1147,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": 4,
+          },
+          "y": {
+            "type": "i32",
+            "value": 3,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 51,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 5,
           },
           "y": {
             "type": "i32",
@@ -863,6 +1231,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 54,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -5,
+          },
+          "y": {
+            "type": "i32",
+            "value": 2,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 55,
     components: [
       {
@@ -894,6 +1285,29 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": -3,
+          },
+          "y": {
+            "type": "i32",
+            "value": 2,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 57,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": -2,
           },
           "y": {
             "type": "i32",
@@ -955,6 +1369,29 @@ See the Mulan PSL v2 for more details.
   ),
 
   (
+    entity: 60,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 1,
+          },
+          "y": {
+            "type": "i32",
+            "value": 2,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
     entity: 61,
     components: [
       {
@@ -986,6 +1423,52 @@ See the Mulan PSL v2 for more details.
           "x": {
             "type": "i32",
             "value": 3,
+          },
+          "y": {
+            "type": "i32",
+            "value": 2,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 63,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 4,
+          },
+          "y": {
+            "type": "i32",
+            "value": 2,
+          },
+        },
+      },
+      {
+        "type": "pong_planting::brick::Brick",
+        "struct": {},
+      },
+    ],
+  ),
+
+  (
+    entity: 64,
+    components: [
+      {
+        "type": "pong_planting::map::GridLocation",
+        "struct": {
+          "x": {
+            "type": "i32",
+            "value": 5,
           },
           "y": {
             "type": "i32",

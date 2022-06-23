@@ -10,6 +10,9 @@ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
 See the Mulan PSL v2 for more details.
 */
 
+use std::env;
+use std::fs::File;
+
 use bevy::prelude::*;
 
 use crate::{appstate, level};
@@ -27,6 +30,16 @@ fn create_map(
     level_info: Res<level::LevelInfo>,
 ) {
     let level_number = level_info.level_number;
+    let custom_path = env::var("HOME").unwrap()
+        + "/.local/share/pong-planting/assets/scenes/"
+        + &level_number.to_string()
+        + &".scn.ron".to_string();
+
+    if File::open(custom_path).is_ok() {
+        let custom_root = env::var("HOME").unwrap() + "/.local/share/pong-planting/";
+        env::set_var("CARGO_MANIFEST_DIR", custom_root)
+    }
+
     let path = "scenes/".to_string() + &level_number.to_string() + &".scn.ron".to_string();
     let scene_handle: Handle<DynamicScene> = assets_server.load(&path);
 
